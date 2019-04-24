@@ -79,7 +79,7 @@ Custom controls based on .net controls adapted for Web Experience Toolkit (WET)
 
 #### Preview
 
-![Preview](screenshot.png)
+![Preview](preview-wetcontrols.gif)
 
 ## Documentation
 

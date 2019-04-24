@@ -20,7 +20,9 @@
 x64/
 x86/
 bld/
-[Bb]in/
+# [Bb]in/
+[Bb]uildProcessTemplates
+[Pp]roperties
 [Oo]bj/
 [Ll]og/
 

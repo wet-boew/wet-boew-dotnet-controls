@@ -108,7 +108,16 @@ namespace WetControls.Controls
             if (!Page.ClientScript.IsStartupScriptRegistered("wb-frmvld-wrap"))
             {
                 string wrap = @"if ($('.wb-frmvld').length === 0)
-                                    $('body').wrapInner('<div class=""wb-frmvld""></div>');";
+                                    $('body').wrapInner('<div class=""wb-frmvld""></div>');
+
+                                Sys.Application.add_init(function () {
+                                    var prm = Sys.WebForms.PageRequestManager.getInstance();
+                                    prm.add_initializeRequest(onEachRequest);
+                                });
+
+                                function onEachRequest(sender, args) {
+                                    args.set_cancel(!$('form').valid());
+                                };";
 
                 Page.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-wrap", wrap, true);
             }

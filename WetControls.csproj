@@ -85,6 +85,7 @@
     <Content Include="bin\Debug\WetControls.pdb" />
     <Content Include="bin\Release\WetControls.dll" />
     <Content Include="bin\Release\WetControls.pdb" />
+    <Content Include="preview-wetcontrols.gif" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

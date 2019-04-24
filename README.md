@@ -47,13 +47,41 @@ Custom controls based on .net controls adapted for Web Experience Toolkit (WET)
 ```xml
 <pages>
     <controls>
-		<add tagPrefix="wet" assembly="WetControls" namespace="WetControls.Controls" />
+	<add tagPrefix="wet" assembly="WetControls" namespace="WetControls.Controls" />
     </controls>
 </pages>
 ```
 
-## Documentation
+### Example of use
 
+```aspx-csharp
+<wet:WetAlert ID="wetAlert" AlertType="Info" Title="INFORMATION" Content="This is an example of use" runat="server"></wet:WetAlert>
+<wet:WetSummary DisplaySummary="true" runat="server"></wet:WetSummary>
+<wet:WetTextbox ID="txtFullname" IsRequired="true" IsLettersOnly="true" LabelText="Fullname" runat="server"></wet:WetTextbox>
+<wet:WetCheckBoxList ID="chkAgeRange" IsRequired="true" LabelText="What is your age group?" runat="server">
+    <asp:ListItem>0 to 17 years</asp:ListItem>
+    <asp:ListItem>18 to 24 years</asp:ListItem>
+    <asp:ListItem>25 to 44 years</asp:ListItem>
+    <asp:ListItem>45 to 64 years</asp:ListItem>
+    <asp:ListItem>65 years and over</asp:ListItem>
+</wet:WetCheckBoxList>
+<wet:WetRadioButtonList ID="rblRecommend" RepeatDirection="Horizontal" LabelText="How likely is it that you would reccommend that control?" runat="server">
+    <asp:ListItem>0</asp:ListItem>
+    <asp:ListItem>1</asp:ListItem>
+    <asp:ListItem>2</asp:ListItem>
+    <asp:ListItem>3</asp:ListItem>
+    <asp:ListItem>4</asp:ListItem>
+    <asp:ListItem>5</asp:ListItem>
+</wet:WetRadioButtonList>
+<wet:WetButton ID="btnCancel" EnableClientValidation="false" Text="Cancel" runat="server" />
+<wet:WetButton ID="btnSubmit" ButtonType="Primary" OnClick="btnSubmit_Click" Text="Submit" runat="server" />
+```
+
+#### Preview
+
+![Preview](screenshot.png)
+
+## Documentation
 
 <a name="wetsummary"></a>
 ### WetSummary Options

@@ -130,7 +130,6 @@ namespace WetControls.Controls
                                     function fixCheckBoxList() {
                                         $(':checkbox[data-rule-require_from_group]').closest('.checkbox').siblings('div').on('change', function (evt) {
                                             var input = $(this).closest('fieldset').find(':checkbox[data-rule-require_from_group]');
-                                            alert('test');
                                             $(this).closest('form').data('validator').element(input);
                                         });
                                     }";

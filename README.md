@@ -1,6 +1,6 @@
-# Wet Controls Library .NET
+# Web Controls Library .NET
 
-Custom controls based on .net controls adapted for Web Experience Toolkit (WET)
+Custom web controls based on .net controls adapted for Web Experience Toolkit (WET)
 
 ## Components
 
@@ -25,11 +25,6 @@ Custom controls based on .net controls adapted for Web Experience Toolkit (WET)
 ## Author
 
 **Jason Pesant** - *Initial Work* -
-
-## Version History
-
-* 0.1
-    * Initial Release
 
 ## Installation
 
@@ -77,9 +72,23 @@ Custom controls based on .net controls adapted for Web Experience Toolkit (WET)
 <wet:WetButton ID="btnSubmit" ButtonType="Primary" OnClick="btnSubmit_Click" Text="Submit" runat="server" />
 ```
 
-#### Preview
-
 ![Preview](preview-wetcontrols.gif)
+
+### Server Side Validation
+
+```C#
+	// validation of the whole page
+	if (Page.IsWetValid())
+	{
+		// all WetControls.Interfaces.IWet is valid
+	}
+
+	// validation for wetcontrols individually
+	if (txtFirstName.IsValid && txtLastName.IsValid)
+	{
+		// txtFirstName and txtLastName are valid
+	}
+```
 
 ## Documentation
 
@@ -115,12 +124,13 @@ Custom controls based on .net controls adapted for Web Experience Toolkit (WET)
 | IsAlphanumeric | Boolean | False | Alphanumeric validation |
 | IsDigitsOnly | Boolean | False | Digits only validation |
 | IsPrice | Boolean | False | Price only validation |
-| IsLettersAndPunctuationOnly | Boolean | False | Letters and basic punctuation only validation |
+| IsLettersWithBasicPunc | Boolean | False | Letters with basic punctuation only validation |
 | IsLettersOnly | Boolean | False | Letters only validation |
 | IsNoWhiteSpace | Boolean | False | No white space validation |
 | MinLength | Boolean | 0 | Minimum length validation |
 | MinWords | Boolean | 0 | Maximum of x words validation |
 | MaxWords | Boolean | 0 | Maximum of x words validation |
+| EqualTo | String | Empty | Compare value with another control or html input by ID |
 | EnableClientValidation | Boolean | true | Enable the client validation for this input |
 | IsValid | Boolean | True | Server side validation with the sames rules of client validation |
 

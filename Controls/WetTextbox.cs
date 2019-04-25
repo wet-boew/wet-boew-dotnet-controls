@@ -13,7 +13,6 @@ namespace WetControls.Controls
         private string ErrorPrice { get { return Lang == "fr" ? "Veuillez spécifier un montant valide." : "Please specify a valid amount."; } }
         private string ErrorGovEmail{ get { return Lang == "fr" ? "Veuillez fournir une adresse électronique du gouvernement valide." : "Please enter a valid government email address."; } }
 
-        public enum ENUM_STATE { Default = 0, Success = 1, Warning = 2, Error = 3 };
         public enum ENUM_GROUP_SIZE { Default = 0, Small = 1, Large = 2 };
 
         [
@@ -71,20 +70,6 @@ namespace WetControls.Controls
                 return (t == null) ? String.Empty : t;
             }
             set { ViewState["ValidationErrorMsg"] = value; }
-        }
-        [
-        Bindable(true),
-        Category("Appearance"),
-        DefaultValue(ENUM_STATE.Default),
-        ]
-        public ENUM_STATE State
-        {
-            get
-            {
-                object o = ViewState["State"];
-                return (o == null) ? ENUM_STATE.Default : (ENUM_STATE)o;
-            }
-            set { ViewState["State"] = value; }
         }
 
         [
@@ -316,14 +301,14 @@ namespace WetControls.Controls
         Category("Appearance"),
         DefaultValue(false),
         ]
-        public bool IsLettersAndPunctuationOnly
+        public bool IsLettersWithBasicPunc
         {
             get
             {
-                object o = ViewState["IsLettersAndPunctuationOnly"];
+                object o = ViewState["IsLettersWithBasicPunc"];
                 return (o == null) ? false : (bool)o;
             }
-            set { ViewState["IsLettersAndPunctuationOnly"] = value; }
+            set { ViewState["IsLettersWithBasicPunc"] = value; }
         }
         [
         Bindable(true),
@@ -395,7 +380,20 @@ namespace WetControls.Controls
             }
             set { ViewState["MaxWords"] = value; }
         }
-
+        [
+        Bindable(true),
+        Category("Appearance"),
+        DefaultValue(""),
+        ]
+        public string EqualTo
+        {
+            get
+            {
+                string t = (string)ViewState["EqualTo"];
+                return (t == null) ? String.Empty : t;
+            }
+            set { ViewState["EqualTo"] = value; }
+        }
         [
         Bindable(true),
         Category("Appearance"),
@@ -418,10 +416,9 @@ namespace WetControls.Controls
                 object o = ViewState["IsValid"];
                 if (o == null)
                 {
-                    // all the regex are the same of client validation from WET TOOL KIT
+                    // all the regex are the same of client validation from Web Experience Toolkit (WET)
                     if (!Visible) return true;
                     if (IsRequired && string.IsNullOrEmpty(Text)) return false;
-                    if (!IsRequired && string.IsNullOrEmpty(Text)) return true;
                     if (IsPhoneNumber)
                     {
                         string regExp = @"^[+]?[0-9]{0,1}[-. ]?\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$";
@@ -464,11 +461,18 @@ namespace WetControls.Controls
                         if (string.IsNullOrEmpty(Text)) return false;
                         if (!System.Text.RegularExpressions.Regex.IsMatch(Text, regExp)) return false;
                     }
-                    if (IsNumber || MinNumber != 0 || MaxNumber != 0)
+                    if (IsNumber)
+                    {
+                        string regExp = @"^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$";
+                        if (string.IsNullOrEmpty(Text)) return false;
+                        if (!System.Text.RegularExpressions.Regex.IsMatch(Text, regExp)) return false;
+                    }
+                    if (MinNumber != 0 || MaxNumber != 0)
                     {
                         Decimal i = 0;
                         Decimal.TryParse(Text, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out i);
-                        if ((IsNumber || MinNumber != 0 || MaxNumber != 0) && i == 0) return false;
+                        if (MinNumber != 0 && i < MinNumber) return false;
+                        if (MaxNumber != 0 && i > MaxNumber) return false;
                     }
                     if (StepNumber != 0)
                     {
@@ -494,7 +498,7 @@ namespace WetControls.Controls
                         if (string.IsNullOrEmpty(Text)) return false;
                         if (!System.Text.RegularExpressions.Regex.IsMatch(Text, regExp)) return false;
                     }
-                    if (IsLettersAndPunctuationOnly)
+                    if (IsLettersWithBasicPunc)
                     {
                         string regExp = @"^[A-Za-z-.,()'""]*$";
                         if (string.IsNullOrEmpty(Text)) return false;
@@ -529,8 +533,15 @@ namespace WetControls.Controls
                         char[] delimiters = new char[] { ' ', '\r', '\n' };
                         int i = Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries).Length;
 
-                        if (MinWords > 0 && i < MinWords) return false;
-                        if (MaxWords > 0 && i > MaxWords) return false;
+                        if (MinWords != 0 && i < MinWords) return false;
+                        if (MaxWords != 0 && i > MaxWords) return false;
+                    }
+                    if (!string.IsNullOrEmpty(EqualTo))
+                    {
+                        Control ctrl = Page.FindControlRecursive(EqualTo.TrimStart('#'));
+                        if (ctrl == null) return false;
+                        else if (!(ctrl is TextBox)) return false;
+                        else if (ctrl is TextBox && !((TextBox)ctrl).Text.Equals(this.Text)) return false;
                     }
                     return true;
                 }
@@ -633,19 +644,6 @@ namespace WetControls.Controls
                 {
                     base.Attributes.Add("type", "time");
                 }
-                if (IsNumber)
-                {
-                    if (MinNumber == 0 && MaxNumber == 0) throw new Exception("MinNumber and MaxNumber must be set");
-                    if (MinNumber == 0 && MaxNumber == 0 && StepNumber == 0) throw new Exception("MinNumber, MaxNumber and StepNumber must be set");
-                    if (MinNumber == MaxNumber) throw new Exception("MinNumber can not be MaxNumber");
-                    if (MinNumber >= MaxNumber) throw new Exception("MinNumber can not be bigger than MaxNumber");
-                    if (StepNumber == 0) throw new Exception("StepNumber must be set for this configuration");
-
-                    base.Attributes.Add("type", "number");
-                    base.Attributes.Add("min", MinNumber.ToString());
-                    base.Attributes.Add("max", MaxNumber.ToString());
-                    base.Attributes.Add("step", StepNumber.ToString(new System.Globalization.CultureInfo("fr-CA")));
-                }
                 if (IsAlphanumeric)
                 {
                     base.Attributes.Add("pattern", "[A-Za-z0-9_\\s]");
@@ -683,7 +681,7 @@ namespace WetControls.Controls
                     base.Attributes.Add("pattern", "[A-Za-z\\s]");
                     base.Attributes.Add("data-rule-lettersonly", "true");
                 }
-                if (IsLettersAndPunctuationOnly)
+                if (IsLettersWithBasicPunc)
                 {
                     base.Attributes.Add("pattern", "[A-Za-z-.,()'\"\\s]");
                     base.Attributes.Add("data-rule-letterswithbasicpunc", "true");
@@ -693,9 +691,29 @@ namespace WetControls.Controls
                     base.Attributes.Add("pattern", "[A-Za-z-.,()'\"\\s]");
                     base.Attributes.Add("data-rule-nowhitespace", "true");
                 }
+                if (IsNumber)
+                {
+                    base.Attributes.Add("type", "number");
+                }
+                if (MinNumber != 0 && MaxNumber != 0)
+                {
+                    base.Attributes.Add("data-rule-range", string.Format("[{0},{1}]", MinNumber, MaxNumber));
+                }
+                else if (MinNumber != 0)
+                {
+                    base.Attributes.Add("min", MinNumber.ToString());
+                }
+                else if (MaxNumber != 0)
+                {
+                    base.Attributes.Add("max", MaxNumber.ToString());
+                }
+                if (StepNumber != 0)
+                {
+                    //base.Attributes.Add("step", StepNumber.ToString(new System.Globalization.CultureInfo("fr-CA")));
+                    base.Attributes.Add("step", StepNumber.ToString());
+                }
                 if (MinLength > 0 && MaxLength > 0)
                 {
-                    base.Attributes.Add("maxlength", MaxLength.ToString());
                     base.Attributes.Add("data-rule-rangelength", string.Format("[{0},{1}]", MinLength, MaxLength));
                 }
                 else if (MinLength > 0)
@@ -717,6 +735,12 @@ namespace WetControls.Controls
                 else if (MaxWords > 0)
                 {
                     base.Attributes.Add("data-rule-maxWords", MaxWords.ToString());
+                }
+                if (!string.IsNullOrEmpty(EqualTo))
+                {
+                    Control ctrl = Page.FindControlRecursive(EqualTo.TrimStart('#')); // prevent tag at beginning
+                    // html element or .net control
+                    base.Attributes.Add("data-rule-equalTo", (ctrl == null ? "#" + EqualTo : "#" + ctrl.ClientID));
                 }
                 if (!string.IsNullOrEmpty(ValidationErrorMsg))
                 {

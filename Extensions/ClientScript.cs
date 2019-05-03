@@ -24,7 +24,7 @@ namespace WetControls.Extensions
 
                                 function onEachRequest(sender, args) {
                                     var element = args.get_postBackElement();
-                                    if (element.type === 'submit' && !element.hasAttribute('formnovalidate')) {
+                                    if ((element.type === 'submit' || element.hasAttribute('formsubmit')) && !element.hasAttribute('formnovalidate')) {
                                         args.set_cancel(!$('form').valid());
                                     }
                                 };";

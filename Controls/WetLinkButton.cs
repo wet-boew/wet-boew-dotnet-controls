@@ -110,6 +110,8 @@ namespace WetControls.Controls
 
             this.AddCssClass("btn");
 
+            this.Attributes.Add("formsubmit", "formsubmit");
+
             // type
             if (ButtonType == BUTTON_TYPE.Primary)
             {

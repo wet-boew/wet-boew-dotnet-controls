@@ -111,8 +111,16 @@ namespace WetControls.Controls
                 base.Attributes.Add("required", "required");
                 if (ScriptManager.GetCurrent(this.Page).IsInAsyncPostBack)
                 {
-                    // validate after async postback
-                    WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);
+                    if (Page.Request.Form["__EVENTTARGET"] != null &&
+                        Page.Request.Form["__EVENTTARGET"] != string.Empty)
+                    {
+                        string ctrlID = Page.Request.Form["__EVENTTARGET"];
+                        if (ctrlID == this.ClientID)
+                        {
+                            // validate after async postback
+                            WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);
+                        }
+                    }
                 }
             }
 

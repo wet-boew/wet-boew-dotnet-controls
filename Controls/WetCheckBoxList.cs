@@ -110,10 +110,21 @@ namespace WetControls.Controls
             // fix checkboxlist client validation
             WetControls.Extensions.ClientScript.FixCheckBoxList(Page);
 
-            if (IsRequired && EnableClientValidation && ScriptManager.GetCurrent(this.Page).IsInAsyncPostBack)
+            if (IsRequired && EnableClientValidation)
             {
-                // validate after async postback
-                WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID + "_0");
+                if (ScriptManager.GetCurrent(this.Page).IsInAsyncPostBack)
+                {
+                    if (Page.Request.Form["__EVENTTARGET"] != null &&
+                        Page.Request.Form["__EVENTTARGET"] != string.Empty)
+                    {
+                        string ctrlID = Page.Request.Form["__EVENTTARGET"];
+                        if (ctrlID == this.ClientID)
+                        {
+                            // validate after async postback
+                            WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID + "_0");
+                        }
+                    }
+                }
             }
 
             if (!string.IsNullOrEmpty(ValidationErrorMsg))

@@ -108,10 +108,21 @@ namespace WetControls.Controls
             // add startup init script
             WetControls.Extensions.ClientScript.InitScript(Page);
 
-            if (IsRequired && EnableClientValidation && ScriptManager.GetCurrent(this.Page).IsInAsyncPostBack)
+            if (IsRequired && EnableClientValidation)
             {
-                // validate after async postback
-                WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);
+                if (ScriptManager.GetCurrent(this.Page).IsInAsyncPostBack)
+                {
+                    if (Page.Request.Form["__EVENTTARGET"] != null &&
+                        Page.Request.Form["__EVENTTARGET"] != string.Empty)
+                    {
+                        string ctrlID = Page.Request.Form["__EVENTTARGET"];
+                        if (ctrlID == this.ClientID)
+                        {
+                            // validate after async postback
+                            WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);
+                        }
+                    }
+                }
             }
 
             if (!string.IsNullOrEmpty(ValidationErrorMsg))

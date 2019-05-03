@@ -91,6 +91,7 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="bin\Debug\WetControls.dll.lastcodeanalysissucceeded" />
+    <None Include="CONTRIBUTING.md" />
     <None Include="LICENSE" />
     <None Include="README.md" />
   </ItemGroup>

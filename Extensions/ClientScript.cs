@@ -23,7 +23,8 @@ namespace WetControls.Extensions
                                 prm.add_initializeRequest(onEachRequest);
 
                                 function onEachRequest(sender, args) {
-                                    if (args.get_postBackElement().type === 'submit') {
+                                    var element = args.get_postBackElement();
+                                    if (element.type === 'submit' && !element.hasAttribute('formnovalidate')) {
                                         args.set_cancel(!$('form').valid());
                                     }
                                 };";

@@ -69,6 +69,7 @@
     <Compile Include="Controls\WetRadioButtonList.cs" />
     <Compile Include="Controls\WetSummary.cs" />
     <Compile Include="Controls\WetTextbox.cs" />
+    <Compile Include="Extensions\ClientScript.cs" />
     <Compile Include="Extensions\WebControlExt.cs" />
     <Compile Include="Interfaces\IWet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

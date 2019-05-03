@@ -564,23 +564,8 @@ namespace WetControls.Controls
         {
             base.OnPreRender(e);
 
-            // wrap all the form with the class for the validation
-            if (!Page.ClientScript.IsStartupScriptRegistered("wb-frmvld-wrap"))
-            {
-                string wrap = @"if ($('.wb-frmvld').length === 0)
-                                    $('body').wrapInner('<div class=""wb-frmvld""></div>');
-
-                                Sys.Application.add_init(function () {
-                                    var prm = Sys.WebForms.PageRequestManager.getInstance();
-                                    prm.add_initializeRequest(onEachRequest);
-                                });
-
-                                function onEachRequest(sender, args) {
-                                    args.set_cancel(!$('form').valid());
-                                };";
-
-                Page.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-wrap", wrap, true);
-            }
+            // add startup init script
+            WetControls.Extensions.ClientScript.InitScript(Page);
 
             if (EnableClientValidation)
             {
@@ -608,18 +593,18 @@ namespace WetControls.Controls
                     if (!Page.ClientScript.IsStartupScriptRegistered("wb-frmvld-govemail"))
                     {
                         string patternGovEmail = @"$(document).on('wb-ready.wb', function (event) {{
-                                            // make sure the current page is using the validation
-                                            if (jQuery.validator && jQuery.validator !== 'undefined') {{
+                                                    // make sure the current page is using the validation
+                                                    if (jQuery.validator && jQuery.validator !== 'undefined') {{
 
-                                                // allows you to create functions for a specific validation method
-                                                (function () {{
-                                                    // the actual validation method govemail is the key to call the function
-                                                    jQuery.validator.addMethod('govemail', function (value, element, params) {{
-                                                        return this.optional( element ) || /^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{{|}}~-]+@((?:[a-zA-Z]([a-zA-Z0-9-.]{{0,61}}[a-zA-Z0-9]).gc{{1}})|canada|scc-csc)(.ca){{1}}$/.test( value );
-                                                    }}, jQuery.validator.format('{0}')); // this is the default string
-                                                }}());
-                                            }}
-                                        }});";
+                                                        // allows you to create functions for a specific validation method
+                                                        (function () {{
+                                                            // the actual validation method govemail is the key to call the function
+                                                            jQuery.validator.addMethod('govemail', function (value, element, params) {{
+                                                                return this.optional( element ) || /^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{{|}}~-]+@((?:[a-zA-Z]([a-zA-Z0-9-.]{{0,61}}[a-zA-Z0-9]).gc{{1}})|canada|scc-csc)(.ca){{1}}$/.test( value );
+                                                            }}, jQuery.validator.format('{0}')); // this is the default string
+                                                        }}());
+                                                    }}
+                                                }});";
                         Page.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-govemail", string.Format(patternGovEmail, ErrorGovEmail), true);
                     }
                 }
@@ -661,18 +646,18 @@ namespace WetControls.Controls
                     if (!Page.ClientScript.IsStartupScriptRegistered("wb-frmvld-price"))
                     {
                         string patternPrice = @"$(document).on('wb-ready.wb', function (event) {{
-                                            // make sure the current page is using the validation
-                                            if (jQuery.validator && jQuery.validator !== 'undefined') {{
+                                                // make sure the current page is using the validation
+                                                if (jQuery.validator && jQuery.validator !== 'undefined') {{
 
-                                                // allows you to create functions for a specific validation method
-                                                (function () {{
-                                                    // the actual validation method price is the key to call the function
-                                                    jQuery.validator.addMethod('price', function (value, element, params) {{
-                                                        return this.optional( element ) || /^[0-9]+([\,|\.]{{0,1}}[0-9]{{2}}){{0,1}}$/.test( value );
-                                                    }}, jQuery.validator.format('{0}')); // this is the default string
-                                                }}());
-                                            }}
-                                        }});";
+                                                    // allows you to create functions for a specific validation method
+                                                    (function () {{
+                                                        // the actual validation method price is the key to call the function
+                                                        jQuery.validator.addMethod('price', function (value, element, params) {{
+                                                            return this.optional( element ) || /^[0-9]+([\,|\.]{{0,1}}[0-9]{{2}}){{0,1}}$/.test( value );
+                                                        }}, jQuery.validator.format('{0}')); // this is the default string
+                                                    }}());
+                                                }}
+                                            }});";
                         Page.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-price", string.Format(patternPrice, ErrorPrice), true);
                     }
                 }
@@ -745,6 +730,11 @@ namespace WetControls.Controls
                 if (!string.IsNullOrEmpty(ValidationErrorMsg))
                 {
                     base.Attributes.Add("data-msg", ValidationErrorMsg);
+                }
+                if (ScriptManager.GetCurrent(this.Page).IsInAsyncPostBack)
+                {
+                    // validate after async postback
+                    WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);
                 }
             }
             if (!string.IsNullOrEmpty(Placeholder))

@@ -104,37 +104,16 @@ namespace WetControls.Controls
         {
             base.OnPreRender(e);
 
-            // wrap all the form with the class for the validation
-            if (!Page.ClientScript.IsStartupScriptRegistered("wb-frmvld-wrap"))
+            // add startup init script
+            WetControls.Extensions.ClientScript.InitScript(Page);
+
+            // fix checkboxlist client validation
+            WetControls.Extensions.ClientScript.FixCheckBoxList(Page);
+
+            if (IsRequired && EnableClientValidation && ScriptManager.GetCurrent(this.Page).IsInAsyncPostBack)
             {
-                string wrap = @"if ($('.wb-frmvld').length === 0)
-                                    $('body').wrapInner('<div class=""wb-frmvld""></div>');
-
-                                Sys.Application.add_init(function () {
-                                    var prm = Sys.WebForms.PageRequestManager.getInstance();
-                                    prm.add_initializeRequest(onEachRequest);
-                                });
-
-                                function onEachRequest(sender, args) {
-                                    args.set_cancel(!$('form').valid());
-                                };";
-
-                Page.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-wrap", wrap, true);
-            }
-
-            // bug correction with checkboxlist because we can not put the same name for required validation in web form
-            if (!Page.ClientScript.IsStartupScriptRegistered("wb-frmvld-checkboxlist"))
-            {
-                string chklist = @" fixCheckBoxList();
-                                    Sys.WebForms.PageRequestManager.getInstance().add_endRequest(fixCheckBoxList);
-                                    function fixCheckBoxList() {
-                                        $(':checkbox[data-rule-require_from_group]').closest('.checkbox').siblings('div').on('change', function (evt) {
-                                            var input = $(this).closest('fieldset').find(':checkbox[data-rule-require_from_group]');
-                                            $(this).closest('form').data('validator').element(input);
-                                        });
-                                    }";
-
-                Page.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-checkboxlist", chklist, true);
+                // validate after async postback
+                WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID + "_0");
             }
 
             if (!string.IsNullOrEmpty(ValidationErrorMsg))

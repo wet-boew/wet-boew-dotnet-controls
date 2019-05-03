@@ -2,7 +2,9 @@
 
 Custom web controls based on .net controls adapted for Web Experience Toolkit (WET)
 
-## Components
+>These controls work with async postback in Web Forms Project.
+
+## Web Forms Components
 
 1.  [WetSummary](#wetsummary)
 2.  [WetTextbox](#wettextbox)
@@ -32,13 +34,13 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 * Add a reference for the dll file by using right-click on the project and then click on "Add reference"
 * Select the dll file and add it to the project
 
-### Register tag in the page designer
+### Option 1: Register tag in the page designer to use in one page
 
 ```aspx-csharp
 <%@ Register TagPrefix="wet" Assembly="WetControls" Namespace="WetControls.Controls" %>
 ```
 
-### Register tag in Web.config
+### Option 2: Register tag in Web.config to use in all pages
 ```xml
 <pages>
     <controls>
@@ -47,7 +49,7 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 </pages>
 ```
 
-### Example of use
+### Example of use in designer
 
 ```aspx-csharp
 <wet:WetAlert ID="wetAlert" AlertType="Info" Title="INFORMATION" Content="This is an example of use" runat="server"></wet:WetAlert>
@@ -96,7 +98,6 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 ### WetSummary Options
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
-| AssociatedFormID | String | Empty | Associate the form id to retrieve the summary of errors. If null, the default summary is targeted |
 | DisplaySummary | Boolean | True | Show or hide the summary |
 
 <a name="wettextbox"></a>
@@ -295,4 +296,4 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details

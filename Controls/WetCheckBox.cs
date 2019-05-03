@@ -121,27 +121,17 @@ namespace WetControls.Controls
         {
             base.OnPreRender(e);
 
-            // wrap all the form with the class for the validation
-            if (!Page.ClientScript.IsStartupScriptRegistered("wb-frmvld-wrap"))
-            {
-                string wrap = @"if ($('.wb-frmvld').length === 0)
-                                    $('body').wrapInner('<div class=""wb-frmvld""></div>');
-
-                                Sys.Application.add_init(function () {
-                                    var prm = Sys.WebForms.PageRequestManager.getInstance();
-                                    prm.add_initializeRequest(onEachRequest);
-                                });
-
-                                function onEachRequest(sender, args) {
-                                    args.set_cancel(!$('form').valid());
-                                };";
-
-                Page.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-wrap", wrap, true);
-            }
+            // add startup init script
+            WetControls.Extensions.ClientScript.InitScript(Page);
 
             if (IsRequired && EnableClientValidation)
             {
                 base.InputAttributes.Add("required", "required");
+                if (ScriptManager.GetCurrent(this.Page).IsInAsyncPostBack)
+                {
+                    // validate after async postback
+                    WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);
+                }
             }
             if (!string.IsNullOrEmpty(ValidationErrorMsg))
             {

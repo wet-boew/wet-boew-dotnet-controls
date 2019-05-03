@@ -105,6 +105,9 @@ namespace WetControls.Controls
         {
             base.OnPreRender(e);
 
+            // add startup init script
+            WetControls.Extensions.ClientScript.InitScript(Page);
+
             this.AddCssClass("btn");
 
             // type

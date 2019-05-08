@@ -140,6 +140,8 @@ namespace WetControls.Controls
             // add startup init script
             WetControls.Extensions.ClientScript.InitScript(Page);
 
+            base.Attributes.Clear();
+
             if (IsRequired && EnableClientValidation)
             {
                 base.Attributes.Add("required", "required");
@@ -149,7 +151,7 @@ namespace WetControls.Controls
                         Page.Request.Form["__EVENTTARGET"] != string.Empty)
                     {
                         string ctrlID = Page.Request.Form["__EVENTTARGET"];
-                        if (ctrlID == this.ClientID)
+                        if (ctrlID == this.UniqueID)
                         {
                             // validate after async postback
                             WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);

@@ -108,6 +108,8 @@ namespace WetControls.Controls
             // add startup init script
             WetControls.Extensions.ClientScript.InitScript(Page);
 
+            base.Attributes.Clear();
+
             this.AddCssClass("btn");
 
             this.Attributes.Add("formsubmit", "formsubmit");

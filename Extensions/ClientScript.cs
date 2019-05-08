@@ -14,14 +14,15 @@ namespace WetControls.Extensions
             // wrap form with validation class and cancel submit if not valid
             if (!p.ClientScript.IsStartupScriptRegistered("wb-frmvld-init"))
             {
-                string script = @"if ($('.wb-frmvld').length === 0) {
-                                    // wrap all the form with the class for the validation
-                                    $('body').wrapInner('<div class=""wb-frmvld""></div>');
+                string script = @"wrapForm();
+                                Sys.WebForms.PageRequestManager.getInstance().add_initializeRequest(onEachRequest);
+                                Sys.WebForms.PageRequestManager.getInstance().add_endRequest(wrapForm);
+                                function wrapForm() {
+                                    if ($('.wb-frmvld').length === 0) {
+                                        // wrap all the form with the class for the validation
+                                        $('body').wrapInner('<div class=""wb-frmvld""></div>');
+                                    }
                                 }
-
-                                var prm = Sys.WebForms.PageRequestManager.getInstance();
-                                prm.add_initializeRequest(onEachRequest);
-
                                 function onEachRequest(sender, args) {
                                     var element = args.get_postBackElement();
                                     if ((element.type === 'submit' || element.hasAttribute('formsubmit')) && !element.hasAttribute('formnovalidate')) {

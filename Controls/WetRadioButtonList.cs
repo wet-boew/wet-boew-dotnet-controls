@@ -25,7 +25,6 @@ namespace WetControls.Controls
             }
             set { ViewState["LabelText"] = value; }
         }
-
         [
         Bindable(true),
         Category("Appearance"),
@@ -68,7 +67,6 @@ namespace WetControls.Controls
             }
             set { ViewState["IsRequired"] = value; }
         }
-
         [
         Bindable(true),
         Category("Appearance"),
@@ -83,7 +81,6 @@ namespace WetControls.Controls
             }
             set { ViewState["EnableClientValidation"] = value; }
         }
-
         public bool IsValid
         {
             get 
@@ -100,6 +97,15 @@ namespace WetControls.Controls
             }
             set { ViewState["IsValid"] = value; }
         }
+        public bool IsPostBackEventControlRegistered
+        {
+            get
+            {
+                object o = ViewState["IsPostBackEventControlRegistered"];
+                return (o == null) ? false : (bool)o;
+            }
+            set { ViewState["IsPostBackEventControlRegistered"] = value; }
+        }
 
         protected override void OnPreRender(EventArgs e)
         {
@@ -110,26 +116,18 @@ namespace WetControls.Controls
 
             base.Attributes.Clear();
 
-            if (IsRequired && EnableClientValidation)
+            if (EnableClientValidation)
             {
-                if (ScriptManager.GetCurrent(this.Page).IsInAsyncPostBack)
+                if (!string.IsNullOrEmpty(ValidationErrorMsg))
                 {
-                    if (Page.Request.Form["__EVENTTARGET"] != null &&
-                        Page.Request.Form["__EVENTTARGET"] != string.Empty)
-                    {
-                        string ctrlID = Page.Request.Form["__EVENTTARGET"];
-                        if (ctrlID == this.UniqueID)
-                        {
-                            // validate after async postback
-                            WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);
-                        }
-                    }
+                    base.Attributes.Add("data-msg", ValidationErrorMsg);
                 }
-            }
-
-            if (!string.IsNullOrEmpty(ValidationErrorMsg))
-            {
-                base.Attributes.Add("data-msg", ValidationErrorMsg);
+                if (IsPostBackEventControlRegistered || this.Page.AutoPostBackControl == this)
+                {
+                    IsPostBackEventControlRegistered = true;
+                    // validate after postback
+                    WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID + "_0");
+                }
             }
         }
 

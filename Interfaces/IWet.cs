@@ -13,6 +13,7 @@ namespace WetControls.Interfaces
         string ValidationErrorMsg { get; set; }
         bool IsRequired { get; set; }
         bool IsValid { get; set; }
+        bool IsPostBackEventControlRegistered { get; set; }
         bool EnableClientValidation { get; set; }
     }
 }

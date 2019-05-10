@@ -7,7 +7,7 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 ## Web Forms Components
 
 1.  [WetSummary](#wetsummary)
-2.  [WetTextbox](#wettextbox)
+2.  [WetTextBox](#wettextbox)
 3.  [WetCheckBox](#wetcheckbox)
 4.  [WetCheckBoxList](#wetcheckboxlist)
 5.  [WetRadioButton](#wetradiobutton)
@@ -54,7 +54,7 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 ```aspx-csharp
 <wet:WetAlert ID="wetAlert" AlertType="Info" Title="INFORMATION" Content="This is an example of use" runat="server"></wet:WetAlert>
 <wet:WetSummary DisplaySummary="true" runat="server"></wet:WetSummary>
-<wet:WetTextbox ID="txtFullname" IsRequired="true" IsLettersOnly="true" LabelText="Fullname" runat="server"></wet:WetTextbox>
+<wet:WetTextBox ID="txtFullname" IsRequired="true" IsLettersOnly="true" LabelText="Fullname" runat="server"></wet:WetTextBox>
 <wet:WetCheckBoxList ID="chkAgeRange" IsRequired="true" LabelText="What is your age group?" runat="server">
     <asp:ListItem>0 to 17 years</asp:ListItem>
     <asp:ListItem>18 to 24 years</asp:ListItem>
@@ -101,7 +101,7 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 | DisplaySummary | Boolean | True | Show or hide the summary |
 
 <a name="wettextbox"></a>
-### WetTextbox Options
+### WetTextBox Options
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | LabelText | String | Empty | Text for the label associated to this control |

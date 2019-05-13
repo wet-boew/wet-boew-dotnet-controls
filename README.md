@@ -155,6 +155,7 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 | LabelCssClass | String | Empty | Class applied to the label |
 | ValidationErrorMsg | String | Empty | Custom error message |
 | IsRequired | Boolean | False | Mandatory form field |
+| MinNumberFieldsRequired | Integer | 1 | Validates the minimum number of required fields |
 | IsValid | Boolean | True | Server side validation with the sames rules of client validation |
 | EnableClientValidation | Boolean | true | Enable the client validation for this input |
 

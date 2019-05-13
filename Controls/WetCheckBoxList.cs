@@ -70,6 +70,24 @@ namespace WetControls.Controls
         [
         Bindable(true),
         Category("Appearance"),
+        DefaultValue(1),
+        ]
+        public int MinNumberFieldsRequired
+        {
+            get
+            {
+                object o = ViewState["MinNumberFieldsRequired"];
+                return (o == null) ? 1 : (int)o;
+            }
+            set
+            {
+                if (value < 0) throw new Exception("The value of 'MinNumberFieldsRequired' must be greater than 0");
+                ViewState["MinNumberFieldsRequired"] = value;
+            }
+        }
+        [
+        Bindable(true),
+        Category("Appearance"),
         DefaultValue(true),
         ]
         public bool EnableClientValidation
@@ -193,7 +211,7 @@ namespace WetControls.Controls
             }
             if (repeatIndex == 0 && IsRequired && EnableClientValidation)
             {
-                writer.AddAttribute("data-rule-require_from_group", "[1, \"." + this.ClientID + "\"]");
+                writer.AddAttribute("data-rule-require_from_group", string.Format("[{0}, \".{1}\"]", this.MinNumberFieldsRequired, this.ClientID));
             }
             base.RenderItem(itemType, repeatIndex, repeatInfo, writer);
 

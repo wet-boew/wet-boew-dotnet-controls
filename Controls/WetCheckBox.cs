@@ -21,7 +21,7 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["LabelText"];
-                return (t == null) ? String.Empty : t;
+                return t ?? String.Empty;
             }
             set { ViewState["LabelText"] = value; }
         }
@@ -35,7 +35,7 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["LabelCssClass"];
-                return (t == null) ? String.Empty : t;
+                return t ?? String.Empty;
             }
             set { ViewState["LabelCssClass"] = value; }
         }
@@ -49,7 +49,7 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["ValidationErrorMsg"];
-                return (t == null) ? String.Empty : t;
+                return t ?? String.Empty;
             }
             set { ViewState["ValidationErrorMsg"] = value; }
         }

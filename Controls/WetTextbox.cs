@@ -25,7 +25,7 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["LabelText"];
-                return (t == null) ? String.Empty : t;
+                return t ?? String.Empty;
             }
             set { ViewState["LabelText"] = value; }
         }
@@ -39,7 +39,7 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["LabelCssClass"];
-                return (t == null) ? String.Empty : t;
+                return t ?? String.Empty;
             }
             set { ViewState["LabelCssClass"] = value; }
         }
@@ -53,7 +53,7 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["Placeholder"];
-                return (t == null) ? String.Empty : t;
+                return t ?? String.Empty;
             }
             set { ViewState["Placeholder"] = value; }
         }
@@ -67,7 +67,7 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["ValidationErrorMsg"];
-                return (t == null) ? String.Empty : t;
+                return t ?? String.Empty;
             }
             set { ViewState["ValidationErrorMsg"] = value; }
         }
@@ -389,7 +389,7 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["EqualTo"];
-                return (t == null) ? String.Empty : t;
+                return t ?? String.Empty;
             }
             set { ViewState["EqualTo"] = value; }
         }
@@ -467,15 +467,13 @@ namespace WetControls.Controls
                     }
                     if (MinNumber != 0 || MaxNumber != 0)
                     {
-                        Decimal i = 0;
-                        Decimal.TryParse(Text, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out i);
+                        Decimal.TryParse(Text, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out Decimal i);
                         if (MinNumber != 0 && i < MinNumber) return false;
                         if (MaxNumber != 0 && i > MaxNumber) return false;
                     }
                     if (StepNumber != 0)
                     {
-                        Decimal i = 0;
-                        Decimal.TryParse(Text, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out i);
+                        Decimal.TryParse(Text, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out Decimal i);
                         if (i != 0 && (i % StepNumber) != 0) return false;
                     }
                     if (IsAlphanumeric)

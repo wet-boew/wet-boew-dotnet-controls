@@ -162,11 +162,9 @@ namespace WetControls.Controls
                 {
                     base.Attributes.Add("data-msg", ValidationErrorMsg);
                 }
-                if (IsPostBackEventControlRegistered || this.Page.AutoPostBackControl == this)
+                if (!IsPostBackEventControlRegistered)
                 {
-                    IsPostBackEventControlRegistered = true;
-                    // validate after postback
-                    WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);
+                    IsPostBackEventControlRegistered = this.Page.AutoPostBackControl == this;
                 }
             }
 
@@ -175,6 +173,11 @@ namespace WetControls.Controls
 
         protected override void Render(HtmlTextWriter writer)
         {
+            if (IsPostBackEventControlRegistered && !this.IsValid)
+            {
+                // validate after postback
+                WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);
+            }
             writer.AddAttribute(HtmlTextWriterAttribute.Class, "form-group");
             writer.RenderBeginTag(HtmlTextWriterTag.Div);
             if (IsRequired)

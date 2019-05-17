@@ -738,11 +738,9 @@ namespace WetControls.Controls
                 {
                     base.Attributes.Add("data-msg", ValidationErrorMsg);
                 }
-                if (IsPostBackEventControlRegistered || this.Page.AutoPostBackControl == this)
+                if (!IsPostBackEventControlRegistered)
                 {
-                    IsPostBackEventControlRegistered = true;
-                    // validate after postback
-                    WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);
+                    IsPostBackEventControlRegistered = this.Page.AutoPostBackControl == this;
                 }
             }
             if (!string.IsNullOrEmpty(Placeholder))
@@ -753,6 +751,11 @@ namespace WetControls.Controls
 
         protected override void Render(HtmlTextWriter writer)
         {
+            if (IsPostBackEventControlRegistered && !this.IsValid)
+            {
+                // validate after postback
+                WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);
+            }
             if (GroupSize == ENUM_GROUP_SIZE.Small) writer.AddAttribute(HtmlTextWriterAttribute.Class, "form-group form-group-sm", false);
             else if (GroupSize == ENUM_GROUP_SIZE.Large) writer.AddAttribute(HtmlTextWriterAttribute.Class, "form-group form-group-lg", false);
             else writer.AddAttribute(HtmlTextWriterAttribute.Class, "form-group", false);

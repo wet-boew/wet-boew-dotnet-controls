@@ -142,17 +142,20 @@ namespace WetControls.Controls
                 {
                     base.Attributes.Add("data-msg", ValidationErrorMsg);
                 }
-                if (IsPostBackEventControlRegistered || this.Page.AutoPostBackControl == this)
+                if (!IsPostBackEventControlRegistered)
                 {
-                    IsPostBackEventControlRegistered = true;
-                    // validate after async postback
-                    WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);
+                    IsPostBackEventControlRegistered = this.Page.AutoPostBackControl == this;
                 }
             }
         }
 
         protected override void Render(HtmlTextWriter writer)
         {
+            if (IsPostBackEventControlRegistered && !this.IsValid)
+            {
+                // validate after postback
+                WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);
+            }
             if (!string.IsNullOrEmpty(this.CssClass))
             {
                 writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClass);

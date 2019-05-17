@@ -66,8 +66,8 @@ namespace WetControls.Extensions
         public static void ValidateScript(Page p, string clientID)
         {
             // validate a unique control after postback
-            string script = "$(function(){ $('#" + clientID + "').valid(); });";
-            ScriptManager.RegisterClientScriptBlock(p, typeof(string), "wb-frmvld-validate-" + clientID, script, true);
+            string script = "$(function(){ console.log('ValidateScript: " + clientID + "'); $('#" + clientID + "').valid(); });";
+            ScriptManager.RegisterStartupScript(p, typeof(string), "wb-frmvld-validate-" + clientID, script, true);
         }
     }
 }

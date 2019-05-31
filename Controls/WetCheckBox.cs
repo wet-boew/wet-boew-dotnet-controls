@@ -132,26 +132,24 @@ namespace WetControls.Controls
             base.Attributes.Clear();
             base.InputAttributes.Clear();
 
-            if (EnableClientValidation)
+            if (EnableClientValidation && IsRequired)
             {
-                if (IsRequired)
+                base.InputAttributes.Add("required", "required");
+
+                if (!IsPostBackEventControlRegistered && this.Page.AutoPostBackControl == this)
                 {
-                    base.InputAttributes.Add("required", "required");
+                    IsPostBackEventControlRegistered = true;
                 }
                 if (!string.IsNullOrEmpty(ValidationErrorMsg))
                 {
                     base.Attributes.Add("data-msg", ValidationErrorMsg);
-                }
-                if (!IsPostBackEventControlRegistered)
-                {
-                    IsPostBackEventControlRegistered = this.Page.AutoPostBackControl == this;
                 }
             }
         }
 
         protected override void Render(HtmlTextWriter writer)
         {
-            if (IsPostBackEventControlRegistered && !this.IsValid)
+            if (IsPostBackEventControlRegistered)
             {
                 // validate after postback
                 WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);

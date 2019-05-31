@@ -558,13 +558,6 @@ namespace WetControls.Controls
             set { ViewState["IsPostBackEventControlRegistered"] = value; }
         }
 
-        protected override void CreateChildControls()
-        {
-            base.CreateChildControls();
-
-            this.AddCssClass("form-control");
-        }
-
         protected override void OnPreRender(EventArgs e)
         {
             base.OnPreRender(e);
@@ -600,9 +593,8 @@ namespace WetControls.Controls
                     if (!Page.ClientScript.IsStartupScriptRegistered("wb-frmvld-govemail"))
                     {
                         string patternGovEmail = @"$(document).on('wb-ready.wb', function (event) {{
-                                                    // make sure the current page is using the validation
+                                                    // make sure the validation is loaded
                                                     if (jQuery.validator && jQuery.validator !== 'undefined') {{
-
                                                         // allows you to create functions for a specific validation method
                                                         (function () {{
                                                             // the actual validation method govemail is the key to call the function
@@ -624,13 +616,7 @@ namespace WetControls.Controls
                     base.Attributes.Add("type", "date");
                     base.Attributes.Add("data-rule-dateISO", "true");
 
-                    if (!Page.ClientScript.IsStartupScriptRegistered("wb-frmvld-date"))
-                    {
-                        // postack event initialisation
-                        string initDate = @"Sys.WebForms.PageRequestManager.getInstance().add_endRequest($('input[type=date]').trigger('wb-init.wb-date'));";
-
-                        Page.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-date", initDate, true);
-                    }
+                    WetControls.Extensions.ClientScript.InitDatePicker(this.Page);
                 }
                 if (IsTime)
                 {
@@ -653,9 +639,8 @@ namespace WetControls.Controls
                     if (!Page.ClientScript.IsStartupScriptRegistered("wb-frmvld-price"))
                     {
                         string patternPrice = @"$(document).on('wb-ready.wb', function (event) {{
-                                                // make sure the current page is using the validation
+                                                // make sure the validation is loaded
                                                 if (jQuery.validator && jQuery.validator !== 'undefined') {{
-
                                                     // allows you to create functions for a specific validation method
                                                     (function () {{
                                                         // the actual validation method price is the key to call the function
@@ -731,27 +716,28 @@ namespace WetControls.Controls
                 if (!string.IsNullOrEmpty(EqualTo))
                 {
                     Control ctrl = Page.FindControlRecursive(EqualTo.TrimStart('#')); // prevent tag at beginning
-                    // html element or .net control
                     base.Attributes.Add("data-rule-equalTo", (ctrl == null ? "#" + EqualTo : "#" + ctrl.ClientID));
                 }
                 if (!string.IsNullOrEmpty(ValidationErrorMsg))
                 {
                     base.Attributes.Add("data-msg", ValidationErrorMsg);
                 }
-                if (!IsPostBackEventControlRegistered)
+                if (!IsPostBackEventControlRegistered && this.Page.AutoPostBackControl == this)
                 {
-                    IsPostBackEventControlRegistered = this.Page.AutoPostBackControl == this;
+                    IsPostBackEventControlRegistered = true;
                 }
             }
             if (!string.IsNullOrEmpty(Placeholder))
             {
                 base.Attributes.Add("placeholder", Placeholder);
             }
+
+            this.AddCssClass("form-control");
         }
 
         protected override void Render(HtmlTextWriter writer)
         {
-            if (IsPostBackEventControlRegistered && !this.IsValid)
+            if (IsPostBackEventControlRegistered)
             {
                 // validate after postback
                 WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);

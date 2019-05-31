@@ -21,7 +21,7 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["LabelText"];
-                return (t == null) ? String.Empty : t;
+                return t ?? String.Empty;
             }
             set { ViewState["LabelText"] = value; }
         }
@@ -35,7 +35,7 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["LabelCssClass"];
-                return (t == null) ? String.Empty : t;
+                return t ?? String.Empty;
             }
             set { ViewState["LabelCssClass"] = value; }
         }
@@ -49,7 +49,7 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["ValidationErrorMsg"];
-                return (t == null) ? String.Empty : t;
+                return t ?? String.Empty;
             }
             set { ViewState["ValidationErrorMsg"] = value; }
         }
@@ -116,22 +116,22 @@ namespace WetControls.Controls
 
             base.Attributes.Clear();
 
-            if (EnableClientValidation)
+            if (EnableClientValidation && IsRequired)
             {
+                if (!IsPostBackEventControlRegistered && this.Page.AutoPostBackControl == this)
+                {
+                    IsPostBackEventControlRegistered = true;
+                }
                 if (!string.IsNullOrEmpty(ValidationErrorMsg))
                 {
                     base.Attributes.Add("data-msg", ValidationErrorMsg);
-                }
-                if (!IsPostBackEventControlRegistered)
-                {
-                    IsPostBackEventControlRegistered = this.Page.AutoPostBackControl == this;
                 }
             }
         }
 
         protected override void Render(HtmlTextWriter writer)
         {
-            if (IsPostBackEventControlRegistered && !this.IsValid)
+            if (IsPostBackEventControlRegistered)
             {
                 // validate after postback
                 WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID + "_0");
@@ -187,13 +187,10 @@ namespace WetControls.Controls
 
             writer.RenderBeginTag(HtmlTextWriterTag.Label);
 
-            if (repeatIndex == 0)
+            if (IsRequired && EnableClientValidation && repeatIndex == 0)
             {
-                if (IsRequired && EnableClientValidation)
-                {
-                    // required
-                    writer.AddAttribute("required", "required");
-                }
+                // required
+                writer.AddAttribute("required", "required");
             }
             base.RenderItem(itemType, repeatIndex, repeatInfo, writer);
 

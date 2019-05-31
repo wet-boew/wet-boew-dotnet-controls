@@ -20,7 +20,7 @@ namespace WetControls.Extensions
                                 function wrapForm() {
                                     if ($('.wb-frmvld').length === 0) {
                                         // wrap all the form with the class for the validation
-                                        $('body').wrapInner('<div class=""wb-frmvld""></div>');
+                                         $('form').wrap('<div class=""wb-frmvld""></div>');
                                     }
                                 }
                                 function onEachRequest(sender, args) {
@@ -42,9 +42,8 @@ namespace WetControls.Extensions
                 string script = @"fixCheckBoxList();
                                 Sys.WebForms.PageRequestManager.getInstance().add_endRequest(fixCheckBoxList);
                                 function fixCheckBoxList() {
-                                    $(':checkbox[data-rule-require_from_group]').closest('.checkbox').siblings('div').on('change', function (evt) {
-                                        var input = $(this).closest('fieldset').find(':checkbox[data-rule-require_from_group]');
-                                        $(this).closest('form').data('validator').element(input);
+                                    $(':checkbox[data-rule-require_from_group]').closest('fieldset').find('div').on('change', function() {
+                                        $(this).closest('fieldset').find(':checkbox[data-rule-require_from_group]').valid();
                                     });
                                 };";
 
@@ -52,22 +51,34 @@ namespace WetControls.Extensions
             }
         }
 
-        public static void SummaryScript(Page p, bool displaySummary, string clientID)
-        {
-            // catch the event to position the summary
-            if (!p.ClientScript.IsStartupScriptRegistered("wb-frmvld-summary"))
-            {
-                string action = displaySummary ? "$(e.target).appendTo('#" + clientID + "');" : "$(e.target).hide();";
-                string script = @"$(document).on('DOMNodeInserted', function (e) { if ($(e.target).is('[id^=errors-]')) { " + action + "} });";
-                p.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-summary", script, true);
-            }
-        }
-
         public static void ValidateScript(Page p, string clientID)
         {
-            // validate a unique control after postback
-            string script = "$(function(){ $('#" + clientID + "').valid(); });";
+            // validate a unique control after postback async or not
+            string script = @"validateCtrl();
+                            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(validateCtrl);
+                            function validateCtrl() {
+                               if (jQuery.validator && jQuery.validator !== 'undefined') {
+                                    $(function(){ $('#" + clientID + @"').valid(); });
+                                } else {
+                                    $(document).on('wb-ready.wb', function(event) {
+                                        $('#" + clientID + @"').valid();
+                                    });
+                                }
+                            };";
             ScriptManager.RegisterStartupScript(p, typeof(string), "wb-frmvld-validate-" + clientID, script, true);
+        }
+
+        public static void InitDatePicker(Page p)
+        {
+            if (!p.ClientScript.IsStartupScriptRegistered("wb-frmvld-date"))
+            {
+                // postack event initialisation
+                string initDate = @"Sys.WebForms.PageRequestManager.getInstance().add_endRequest(initDatePicker);
+                                function initDatePicker() {
+                                    $('input[type=date]').trigger('wb-init.wb-date');
+                                }";
+                p.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-date", initDate, true);
+            }
         }
     }
 }

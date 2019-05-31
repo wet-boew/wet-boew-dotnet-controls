@@ -21,7 +21,7 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["Title"];
-                return (t == null) ? String.Empty : t;
+                return t ?? String.Empty;
             }
             set { ViewState["Title"] = value; }
         }
@@ -44,9 +44,11 @@ namespace WetControls.Controls
         private void RegisterCustomCss()
         {
             // add embedded style sheet to parent page
-            System.Web.UI.HtmlControls.HtmlLink cssLink = new System.Web.UI.HtmlControls.HtmlLink();
-            cssLink.ID = "bs-callout-css";
-            cssLink.Href = Page.ClientScript.GetWebResourceUrl(this.GetType(), "WetControls.StyleSheets.bs-callout.css");
+            System.Web.UI.HtmlControls.HtmlLink cssLink = new System.Web.UI.HtmlControls.HtmlLink()
+            {
+                ID = "bs-callout-css",
+                Href = Page.ClientScript.GetWebResourceUrl(this.GetType(), "WetControls.StyleSheets.bs-callout.css"),
+            };
             cssLink.Attributes.Add("rel", "stylesheet");
             cssLink.Attributes.Add("type", "text/css");
 

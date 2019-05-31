@@ -96,7 +96,7 @@ namespace WetControls.Controls
             get
             {
                 string m = (string)ViewState["MessageConfirmation"];
-                return (m == null) ? String.Empty : m;
+                return m ?? String.Empty;
             }
             set { ViewState["MessageConfirmation"] = value; }
         }

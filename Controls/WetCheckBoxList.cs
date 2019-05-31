@@ -21,7 +21,7 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["LabelText"];
-                return (t == null) ? String.Empty : t;
+                return t ?? String.Empty;
             }
             set { ViewState["LabelText"] = value; }
         }
@@ -35,7 +35,7 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["LabelCssClass"];
-                return (t == null) ? String.Empty : t;
+                return t ?? String.Empty;
             }
             set { ViewState["LabelCssClass"] = value; }
         }
@@ -49,7 +49,7 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["ValidationErrorMsg"];
-                return (t == null) ? String.Empty : t;
+                return t ?? String.Empty;
             }
             set { ViewState["ValidationErrorMsg"] = value; }
         }
@@ -129,29 +129,29 @@ namespace WetControls.Controls
             base.OnPreRender(e);
 
             // add startup init script
-            WetControls.Extensions.ClientScript.InitScript(Page);
-
-            // fix checkboxlist client validation
-            WetControls.Extensions.ClientScript.FixCheckBoxList(Page);
+            WetControls.Extensions.ClientScript.InitScript(this.Page);
 
             base.Attributes.Clear();
 
-            if (EnableClientValidation)
+            if (EnableClientValidation && IsRequired)
             {
+                // fix checkboxlist client validation
+                WetControls.Extensions.ClientScript.FixCheckBoxList(this.Page);
+
+                if (!IsPostBackEventControlRegistered && this.Page.AutoPostBackControl == this)
+                {
+                    IsPostBackEventControlRegistered = true;
+                }
                 if (!string.IsNullOrEmpty(ValidationErrorMsg))
                 {
                     base.Attributes.Add("data-msg", ValidationErrorMsg);
-                }
-                if (!IsPostBackEventControlRegistered)
-                {
-                    IsPostBackEventControlRegistered = this.Page.AutoPostBackControl == this;
                 }
             }
         }
 
         protected override void Render(HtmlTextWriter writer)
         {
-            if (IsPostBackEventControlRegistered && !this.IsValid)
+            if (IsPostBackEventControlRegistered)
             {
                 // validate after postback
                 WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID + "_0");
@@ -211,10 +211,10 @@ namespace WetControls.Controls
             if (IsRequired && EnableClientValidation)
             {
                 writer.AddAttribute(HtmlTextWriterAttribute.Class, this.ClientID);
-            }
-            if (repeatIndex == 0 && IsRequired && EnableClientValidation)
-            {
-                writer.AddAttribute("data-rule-require_from_group", string.Format("[{0}, \".{1}\"]", this.MinNumberFieldsRequired, this.ClientID));
+                if (repeatIndex == 0)
+                {
+                    writer.AddAttribute("data-rule-require_from_group", string.Format("[{0}, \".{1}\"]", this.MinNumberFieldsRequired, this.ClientID));
+                }
             }
             base.RenderItem(itemType, repeatIndex, repeatInfo, writer);
 

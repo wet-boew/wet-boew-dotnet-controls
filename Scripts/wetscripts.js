@@ -17,8 +17,6 @@ function onEachRequest(sender, args) {
 // postback validation
 function postbackValidation() {
     var validator = $('form').data('validator');
-    var numberOfInvalids = validator.numberOfInvalids();
-
     $.each(validator.invalid, function (index, value) {
         if (value) {
             var input = $('#' + index.replace(/\$/g, '_'));

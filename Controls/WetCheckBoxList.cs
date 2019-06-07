@@ -114,15 +114,6 @@ namespace WetControls.Controls
             }
             set { ViewState["IsValid"] = value; }
         }
-        public bool IsPostBackEventControlRegistered
-        {
-            get
-            {
-                object o = ViewState["IsPostBackEventControlRegistered"];
-                return (o == null) ? false : (bool)o;
-            }
-            set { ViewState["IsPostBackEventControlRegistered"] = value; }
-        }
 
         protected override void OnPreRender(EventArgs e)
         {
@@ -138,10 +129,6 @@ namespace WetControls.Controls
                 // fix checkboxlist client validation
                 WetControls.Extensions.ClientScript.FixCheckBoxList(this.Page);
 
-                if (!IsPostBackEventControlRegistered && this.Page.AutoPostBackControl == this)
-                {
-                    IsPostBackEventControlRegistered = true;
-                }
                 if (!string.IsNullOrEmpty(ValidationErrorMsg))
                 {
                     base.Attributes.Add("data-msg", ValidationErrorMsg);
@@ -151,10 +138,10 @@ namespace WetControls.Controls
 
         protected override void Render(HtmlTextWriter writer)
         {
-            if (IsPostBackEventControlRegistered)
+            if (this.Page.AutoPostBackControl == this)
             {
                 // validate after postback
-                WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID + "_0");
+                WetControls.Extensions.ClientScript.ValidateScript(Page);
             }
             if (!string.IsNullOrEmpty(this.CssClass))
             {

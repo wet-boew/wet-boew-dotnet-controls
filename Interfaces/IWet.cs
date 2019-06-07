@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WetControls.Interfaces
+﻿namespace WetControls.Interfaces
 {
     public interface IWet
     {
@@ -13,7 +7,6 @@ namespace WetControls.Interfaces
         string ValidationErrorMsg { get; set; }
         bool IsRequired { get; set; }
         bool IsValid { get; set; }
-        bool IsPostBackEventControlRegistered { get; set; }
         bool EnableClientValidation { get; set; }
     }
 }

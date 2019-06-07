@@ -117,16 +117,6 @@ namespace WetControls.Controls
             set { ViewState["IsValid"] = value; }
         }
 
-        public bool IsPostBackEventControlRegistered
-        {
-            get
-            {
-                object o = ViewState["IsPostBackEventControlRegistered"];
-                return (o == null) ? false : (bool)o;
-            }
-            set { ViewState["IsPostBackEventControlRegistered"] = value; }
-        }
-
         protected override void OnDataBinding(EventArgs e)
         {
             base.OnDataBinding(e);
@@ -156,10 +146,6 @@ namespace WetControls.Controls
             {
                 base.Attributes.Add("required", "required");
 
-                if (!IsPostBackEventControlRegistered && this.Page.AutoPostBackControl == this)
-                {
-                    IsPostBackEventControlRegistered = true;
-                }
                 if (!string.IsNullOrEmpty(ValidationErrorMsg))
                 {
                     base.Attributes.Add("data-msg", ValidationErrorMsg);
@@ -171,10 +157,10 @@ namespace WetControls.Controls
 
         protected override void Render(HtmlTextWriter writer)
         {
-            if (IsPostBackEventControlRegistered)
+            if (this.Page.AutoPostBackControl == this)
             {
                 // validate after postback
-                WetControls.Extensions.ClientScript.ValidateScript(Page, this.ClientID);
+                WetControls.Extensions.ClientScript.ValidateScript(Page);
             }
             writer.AddAttribute(HtmlTextWriterAttribute.Class, "form-group");
             writer.RenderBeginTag(HtmlTextWriterTag.Div);

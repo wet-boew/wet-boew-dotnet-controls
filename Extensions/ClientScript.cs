@@ -1,34 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.UI;
+﻿using System.Web.UI;
 
+[assembly: System.Web.UI.WebResource("WetControls.Scripts.wetscripts.js", "text/javascript")]
 namespace WetControls.Extensions
 {
     public static class ClientScript
     {
         public static void InitScript(Page p)
         {
-            // wrap form with validation class and cancel submit if not valid
+            // load init scripts
             if (!p.ClientScript.IsStartupScriptRegistered("wb-frmvld-init"))
             {
+                // load custom scripts
+                System.Web.UI.ScriptManager sm = System.Web.UI.ScriptManager.GetCurrent(p);
+                if (sm == null) throw new System.Exception("You must have a script manager in your page.");
+
+                sm.Scripts.Add(new System.Web.UI.ScriptReference("WetControls.Scripts.wetscripts.js", "WetControls"));
+
                 string script = @"wrapForm();
-                                Sys.WebForms.PageRequestManager.getInstance().add_initializeRequest(onEachRequest);
                                 Sys.WebForms.PageRequestManager.getInstance().add_endRequest(wrapForm);
-                                function wrapForm() {
-                                    if ($('.wb-frmvld').length === 0) {
-                                        // wrap all the form with the class for the validation
-                                         $('form').wrap('<div class=""wb-frmvld""></div>');
-                                    }
-                                }
-                                function onEachRequest(sender, args) {
-                                    var element = args.get_postBackElement();
-                                    if ((element.type === 'submit' || element.hasAttribute('formsubmit')) && !element.hasAttribute('formnovalidate')) {
-                                        args.set_cancel(!$('form').valid());
-                                    }
-                                };";
+                                Sys.WebForms.PageRequestManager.getInstance().add_initializeRequest(onEachRequest);";
 
                 p.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-init", script, true);
             }
@@ -40,32 +30,23 @@ namespace WetControls.Extensions
             if (!p.ClientScript.IsStartupScriptRegistered("wb-frmvld-checkboxlist"))
             {
                 string script = @"fixCheckBoxList();
-                                Sys.WebForms.PageRequestManager.getInstance().add_endRequest(fixCheckBoxList);
-                                function fixCheckBoxList() {
-                                    $(':checkbox[data-rule-require_from_group]').closest('fieldset').find('div').on('change', function() {
-                                        $(this).closest('fieldset').find(':checkbox[data-rule-require_from_group]').valid();
-                                    });
-                                };";
+                                Sys.WebForms.PageRequestManager.getInstance().add_endRequest(fixCheckBoxList);";
 
                 p.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-checkboxlist", script, true);
             }
         }
 
-        public static void ValidateScript(Page p, string clientID)
+        public static void ValidateScript(Page p)
         {
-            // validate a unique control after postback async or not
-            string script = @"validateCtrl();
-                            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(validateCtrl);
-                            function validateCtrl() {
-                               if (jQuery.validator && jQuery.validator !== 'undefined') {
-                                    $(function(){ $('#" + clientID + @"').valid(); });
-                                } else {
-                                    $(document).on('wb-ready.wb', function(event) {
-                                        $('#" + clientID + @"').valid();
-                                    });
-                                }
-                            };";
-            ScriptManager.RegisterStartupScript(p, typeof(string), "wb-frmvld-validate-" + clientID, script, true);
+            string script = @"if ($.validator && $.validator !== 'undefined') {
+                                $(postbackValidation);
+                            } else {
+                                $(document).on('wb-ready.wb', function(event) {
+                                    postbackValidation();
+                                });
+                            }";
+
+            ScriptManager.RegisterStartupScript(p, p.GetType(), "wb-frmvld-validate", script, true);
         }
 
         public static void InitDatePicker(Page p)
@@ -73,10 +54,7 @@ namespace WetControls.Extensions
             if (!p.ClientScript.IsStartupScriptRegistered("wb-frmvld-date"))
             {
                 // postack event initialisation
-                string initDate = @"Sys.WebForms.PageRequestManager.getInstance().add_endRequest(initDatePicker);
-                                function initDatePicker() {
-                                    $('input[type=date]').trigger('wb-init.wb-date');
-                                }";
+                string initDate = @"Sys.WebForms.PageRequestManager.getInstance().add_endRequest(initDatePicker);";
                 p.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-date", initDate, true);
             }
         }

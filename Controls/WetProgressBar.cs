@@ -23,7 +23,8 @@ namespace WetControls.Controls
         Description("The progress collection"),
         DesignerSerializationVisibility(
             DesignerSerializationVisibility.Content),
-        Editor(typeof(ProgressCollectionEditor), typeof(UITypeEditor)),
+            Editor(typeof(ProgressCollectionEditor), 
+            typeof(UITypeEditor)),
         PersistenceMode(PersistenceMode.InnerDefaultProperty)
         ]
         public List<ProgressData> ProgressList
@@ -47,32 +48,27 @@ namespace WetControls.Controls
 
                 foreach (ProgressData item in progressList)
                 {
-                    ProgressData progress = item as ProgressData;
-
-                    if (progress != null)
+                    if (item.MinWidth > 0)
                     {
-                        if (item.MinWidth > 0)
-                        {
-                            writer.AddStyleAttribute("min-width", string.Format("{0}em", item.MinWidth));
-                        }
-                        writer.AddStyleAttribute(HtmlTextWriterStyle.Width, string.Format("{0}%", (int)item.ProgressWidth));
-                        writer.AddAttribute("aria-valuemax", item.ValueMax.ToString());
-                        writer.AddAttribute("aria-valuemin", item.ValueMin.ToString());
-                        writer.AddAttribute("aria-valuenow", item.ValueNow.ToString());
-                        writer.AddAttribute("role", "progressbar");
-                        writer.AddAttribute(HtmlTextWriterAttribute.Class, item.ProgressBarClass);
-                        writer.RenderBeginTag(HtmlTextWriterTag.Div);
-
-                        if (!item.ShowValueLabel)
-                        {
-                            writer.AddAttribute(HtmlTextWriterAttribute.Class, "sr-only");
-                        }
-                        writer.RenderBeginTag(HtmlTextWriterTag.Span);
-                        writer.Write(string.Format("{0}%", item.ProgressWidth));
-                        writer.RenderEndTag();
-
-                        writer.RenderEndTag();
+                        writer.AddStyleAttribute("min-width", string.Format("{0}em", item.MinWidth));
                     }
+                    writer.AddStyleAttribute(HtmlTextWriterStyle.Width, string.Format("{0}%", (int)item.ProgressWidth));
+                    writer.AddAttribute("aria-valuemax", item.ValueMax.ToString());
+                    writer.AddAttribute("aria-valuemin", item.ValueMin.ToString());
+                    writer.AddAttribute("aria-valuenow", item.ValueNow.ToString());
+                    writer.AddAttribute("role", "progressbar");
+                    writer.AddAttribute(HtmlTextWriterAttribute.Class, item.ProgressBarClass);
+                    writer.RenderBeginTag(HtmlTextWriterTag.Div);
+
+                    if (!item.ShowValueLabel)
+                    {
+                        writer.AddAttribute(HtmlTextWriterAttribute.Class, "sr-only");
+                    }
+                    writer.RenderBeginTag(HtmlTextWriterTag.Span);
+                    writer.Write(string.Format("{0}%", item.ProgressWidth));
+                    writer.RenderEndTag();
+
+                    writer.RenderEndTag();
                 }
 
                 writer.RenderEndTag();

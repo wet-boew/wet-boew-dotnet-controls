@@ -49,8 +49,8 @@ function checkErrors() {
         errors.find('a').each(function () {
             id = $(this).attr('href');
             input = $(id);
-            if (input.length == 0) $(this).remove();
+            if (input.length === 0) $(this).remove();
         });
-        if (errors.find('a').length == 0) errors.hide();
+        if (errors.find('a').length === 0) errors.hide();
     }
 }

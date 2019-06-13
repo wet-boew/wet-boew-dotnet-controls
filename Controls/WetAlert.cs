@@ -20,7 +20,7 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["AlertTitle"];
-                return (t == null) ? String.Empty : t;
+                return t ?? String.Empty;
             }
             set { ViewState["AlertTitle"] = value; }
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace WetControls.Controls
@@ -8,19 +9,20 @@ namespace WetControls.Controls
     [ToolboxData("<{0}:WetModal runat=\"server\"></{0}:WetModal>")]
     public class WetModal : WebControl, INamingContainer
     {
-        [
-        Browsable(false),
-        PersistenceMode(PersistenceMode.InnerProperty),
-        DefaultValue(null),
-        Description("ItemTemplate")
-        ]
-        private PlaceHolder _content { get; set; }
+        private ITemplate _contentTemplate = null;
 
         [
-        PersistenceMode(PersistenceMode.InnerProperty),
+        Browsable(true),
+        DefaultValue(null),
+        TemplateContainer(typeof(TemplateContainer)),
         TemplateInstance(TemplateInstance.Single),
+        PersistenceMode(PersistenceMode.InnerProperty)
         ]
-        public ITemplate Content { get; set; }
+        public ITemplate ContentTemplate
+        {
+            get { return _contentTemplate; }
+            set { _contentTemplate = value; }
+        }
 
         [
         Bindable(true),
@@ -32,51 +34,53 @@ namespace WetControls.Controls
             get
             {
                 string t = (string)ViewState["HeaderText"];
-                return (t == null) ? String.Empty : t;
+                return t ?? "";
             }
             set { ViewState["HeaderText"] = value; }
         }
 
         public void ShowPopup()
         {
-            ScriptManager.RegisterClientScriptBlock(Page, Page.GetType(), "wetModal", "$(function(){wb.doc.trigger( 'open.wb-lbx', [[{src:'#" + this.ClientID + "', type:'inline'}]]);});", true);
+            string script = @"$(function(){
+                                $('#" + this.ClientID + @"').appendTo($('form'));
+                                $(document).trigger('open.wb-lbx', [[{src:'#" + this.ClientID + @"', type:'inline'}]]);
+                            });";
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "wetModal", script, true);
         }
 
         protected override void CreateChildControls()
         {
-            base.CreateChildControls();
-
-            _content = new PlaceHolder();
-            Content.InstantiateIn(_content);
-        }
-
-        protected override void OnPreRender(EventArgs e)
-        {
-            base.OnPreRender(e);
-
-            foreach (Control ctrl in this.Controls)
+            if (ContentTemplate != null)
             {
-                _content.Controls.Add(ctrl);
+                Controls.Clear();
+                TemplateContainer container = new TemplateContainer();
+                ContentTemplate.InstantiateIn(container);
+                Controls.Add(container);
             }
         }
 
         protected override void Render(HtmlTextWriter writer)
         {
             writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, "wb-overlay modal-content overlay-def wb-popup-mid");
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, "mfp-hide modal-dialog modal-content overlay-def");
             writer.RenderBeginTag("section");
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, "modal-header");
-            writer.RenderBeginTag("header");
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, "modal-title");
-            writer.RenderBeginTag(HtmlTextWriterTag.H2);
-            writer.Write(this.HeaderText);
-            writer.RenderEndTag();
-            writer.RenderEndTag();
+            if (!string.IsNullOrEmpty(HeaderText))
+            {
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, "modal-header");
+                writer.RenderBeginTag("header");
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, "modal-title");
+                writer.RenderBeginTag(HtmlTextWriterTag.H2);
+                writer.Write(this.HeaderText);
+                writer.RenderEndTag();
+                writer.RenderEndTag();
+            }
             writer.AddAttribute(HtmlTextWriterAttribute.Class, "modal-body");
             writer.RenderBeginTag(HtmlTextWriterTag.Div);
-            _content.RenderControl(writer);
+            base.Render(writer);
             writer.RenderEndTag();
             writer.RenderEndTag();
         }
     }
+
+    public class TemplateContainer : WebControl, INamingContainer {}
 }

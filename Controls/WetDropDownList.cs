@@ -17,6 +17,26 @@ namespace WetControls.Controls
         Category("Appearance"),
         DefaultValue(""),
         ]
+        public new string ID
+        {
+            get { return base.ID; }
+            set { base.ID = value; }
+        }
+        [
+        Bindable(true),
+        Category("Appearance"),
+        DefaultValue(null),
+        ]
+        public new bool Visible
+        {
+            get { return base.Visible; }
+            set { base.Visible = value; }
+        }
+        [
+        Bindable(true),
+        Category("Appearance"),
+        DefaultValue(""),
+        ]
         public string LabelText
         {
             get

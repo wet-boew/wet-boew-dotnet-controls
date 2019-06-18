@@ -11,6 +11,26 @@ namespace WetControls.Controls
         private string Lang { get { return System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName; } }
         private string RequiredText { get { return Lang == "fr" ? " (Obligatoire)" : " (Required)"; } }
 
+        [
+        Bindable(true),
+        Category("Appearance"),
+        DefaultValue(""),
+        ]
+        public new string ID
+        {
+            get { return base.ID; }
+            set { base.ID = value; }
+        }
+        [
+        Bindable(true),
+        Category("Appearance"),
+        DefaultValue(null),
+        ]
+        public new bool Visible
+        {
+            get { return base.Visible; }
+            set { base.Visible = value; }
+        }
         public string LabelText
         {
             get

@@ -2,6 +2,8 @@
 {
     public interface IWet
     {
+        string ID { get; set; }
+        bool Visible { get; set; }
         string LabelText { get; set; }
         string LabelCssClass { get; set; }
         string ValidationErrorMsg { get; set; }

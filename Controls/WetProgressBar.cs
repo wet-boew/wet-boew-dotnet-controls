@@ -201,7 +201,11 @@ namespace WetControls.Controls
 
         public decimal ProgressWidth
         {
-            get { return ValueNow / ValueMax * 100; }
+            get
+            {
+                try { return ValueNow / ValueMax * 100; }
+                catch { return 0; }
+            }
         }
 
         public string ProgressBarClass

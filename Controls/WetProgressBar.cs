@@ -17,36 +17,42 @@ namespace WetControls.Controls
     ToolboxData("<{0}:WetProgressBar runat=\"server\"></{0}:WetProgressBar>")]
     public class WetProgressBar : CompositeControl
     {
-        private List<ProgressData> progressList;
         [
         Category("Behavior"),
         Description("The progress collection"),
         DesignerSerializationVisibility(
             DesignerSerializationVisibility.Content),
-            Editor(typeof(ProgressCollectionEditor), 
+            Editor(typeof(ProgressCollectionEditor),
             typeof(UITypeEditor)),
         PersistenceMode(PersistenceMode.InnerDefaultProperty)
         ]
         public List<ProgressData> ProgressList
         {
-            get 
-            { 
-                if (progressList == null)
+            get
+            {
+
+                if (ViewState["ProgressList"] != null)
                 {
-                    progressList = new List<ProgressData>();
+                    return (List<ProgressData>)ViewState["ProgressList"];
                 }
-                return progressList;
+                else
+                {
+                    List<ProgressData> progressList = new List<ProgressData>();
+                    ViewState["ProgressList"] = progressList;
+                    return progressList;
+                }
             }
+            set { ViewState["ProgressList"] = value; }
         }
 
         protected override void RenderContents(HtmlTextWriter writer)
         {
-            if (progressList != null && progressList.Count > 0)
+            if (ProgressList != null && ProgressList.Count > 0)
             {
                 writer.AddAttribute(HtmlTextWriterAttribute.Class, "progress");
                 writer.RenderBeginTag(HtmlTextWriterTag.Div);
 
-                foreach (ProgressData item in progressList)
+                foreach (ProgressData item in ProgressList)
                 {
                     if (item.MinWidth > 0)
                     {
@@ -76,6 +82,7 @@ namespace WetControls.Controls
         }
     }
 
+    [Serializable]
     [ToolboxItem(false)]
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class ProgressData
@@ -253,7 +260,7 @@ namespace WetControls.Controls
     {
         public ProgressCollectionEditor(Type type)
             : base(type)
-        { 
+        {
         }
 
         protected override bool CanSelectMultipleInstances()

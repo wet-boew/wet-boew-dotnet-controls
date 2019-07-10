@@ -140,9 +140,6 @@ namespace WetControls.Controls
             // add startup init script
             WetControls.Extensions.ClientScript.InitScript(Page);
 
-            base.Attributes.Clear();
-            base.InputAttributes.Clear();
-
             if (EnableClientValidation && IsRequired)
             {
                 base.InputAttributes.Add("required", "required");

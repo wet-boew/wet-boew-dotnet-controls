@@ -142,8 +142,6 @@ namespace WetControls.Controls
             // add startup init script
             WetControls.Extensions.ClientScript.InitScript(this.Page);
 
-            base.Attributes.Clear();
-
             if (EnableClientValidation && IsRequired)
             {
                 // fix checkboxlist client validation

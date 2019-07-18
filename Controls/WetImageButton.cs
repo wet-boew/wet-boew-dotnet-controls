@@ -101,14 +101,17 @@ namespace WetControls.Controls
             set { ViewState["MessageConfirmation"] = value; }
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            // startup init script
+            WetControls.Extensions.ClientScript.InitScript(Page);
+
+            base.OnLoad(e);
+        }
+
         protected override void OnPreRender(EventArgs e)
         {
             base.OnPreRender(e);
-
-            // add startup init script
-            WetControls.Extensions.ClientScript.InitScript(Page);
-
-            base.Attributes.Clear();
 
             this.AddCssClass("btn");
 

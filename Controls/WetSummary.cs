@@ -24,15 +24,15 @@ namespace WetControls.Controls
             set { ViewState["DisplaySummary"] = value; }
         }
 
-        protected override void OnPreRender(EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
-            base.OnPreRender(e);
-
-            // add startup init script
+            // startup init script
             WetControls.Extensions.ClientScript.InitScript(Page);
 
             // catch summary inserted
             this.SummaryScript();
+
+            base.OnLoad(e);
         }
 
         private void SummaryScript()

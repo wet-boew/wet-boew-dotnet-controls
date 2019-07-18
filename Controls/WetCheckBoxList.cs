@@ -36,6 +36,16 @@ namespace WetControls.Controls
         Category("Appearance"),
         DefaultValue(""),
         ]
+        public new string CssClass
+        {
+            get { return base.CssClass; }
+            set { base.CssClass = value; }
+        }
+        [
+        Bindable(true),
+        Category("Appearance"),
+        DefaultValue(""),
+        ]
         public string LabelText
         {
             get
@@ -135,12 +145,10 @@ namespace WetControls.Controls
             set { ViewState["IsValid"] = value; }
         }
 
-        protected override void OnPreRender(EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
-            base.OnPreRender(e);
-
-            // add startup init script
-            WetControls.Extensions.ClientScript.InitScript(this.Page);
+            // startup init script
+            WetControls.Extensions.ClientScript.InitScript(Page);
 
             if (EnableClientValidation && IsRequired)
             {
@@ -152,6 +160,8 @@ namespace WetControls.Controls
                     base.Attributes.Add("data-msg", ValidationErrorMsg);
                 }
             }
+
+            base.OnLoad(e);
         }
 
         protected override void Render(HtmlTextWriter writer)

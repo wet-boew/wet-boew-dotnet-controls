@@ -37,6 +37,16 @@ namespace WetControls.Controls
         Category("Appearance"),
         DefaultValue(""),
         ]
+        public new string CssClass
+        {
+            get { return base.CssClass; }
+            set { base.CssClass = value; }
+        }
+        [
+        Bindable(true),
+        Category("Appearance"),
+        DefaultValue(""),
+        ]
         public string LabelText
         {
             get
@@ -153,11 +163,9 @@ namespace WetControls.Controls
             }
         }
 
-        protected override void OnPreRender(EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
-            base.OnPreRender(e);
-
-            // add startup init script
+            // startup init script
             WetControls.Extensions.ClientScript.InitScript(Page);
 
             if (EnableClientValidation && IsRequired)
@@ -170,6 +178,13 @@ namespace WetControls.Controls
                 }
             }
 
+            base.OnLoad(e);
+        }
+
+        protected override void OnPreRender(EventArgs e)
+        {
+            base.OnPreRender(e);
+     
             this.AddCssClass("form-control");
         }
 

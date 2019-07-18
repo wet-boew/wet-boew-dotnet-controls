@@ -11,7 +11,7 @@ namespace WetControls.Controls
         private string Lang { get { return System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName; } }
         private string RequiredText { get { return Lang == "fr" ? " (Obligatoire)" : " (Required)"; } }
         private string ErrorPrice { get { return Lang == "fr" ? "Veuillez spécifier un montant valide." : "Please specify a valid amount."; } }
-        private string ErrorGovEmail{ get { return Lang == "fr" ? "Veuillez fournir une adresse électronique du gouvernement valide." : "Please enter a valid government email address."; } }
+        private string ErrorGovEmail { get { return Lang == "fr" ? "Veuillez fournir une adresse électronique du gouvernement valide." : "Please enter a valid government email address."; } }
 
         public enum ENUM_GROUP_SIZE { Default = 0, Small = 1, Large = 2 };
 
@@ -34,6 +34,16 @@ namespace WetControls.Controls
         {
             get { return base.Visible; }
             set { base.Visible = value; }
+        }
+        [
+        Bindable(true),
+        Category("Appearance"),
+        DefaultValue(""),
+        ]
+        public new string CssClass
+        {
+            get { return base.CssClass; }
+            set { base.CssClass = value; }
         }
         [
         Bindable(true),
@@ -569,12 +579,26 @@ namespace WetControls.Controls
             set { ViewState["IsValid"] = value; }
         }
 
-        protected override void OnPreRender(EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
-            base.OnPreRender(e);
-
-            // add startup init script
+            // startup init script
             WetControls.Extensions.ClientScript.InitScript(Page);
+
+            // datepicker script
+            if (IsDate)
+            {
+                WetControls.Extensions.ClientScript.InitDatePicker(this.Page);
+            }
+            // gouvernment email script
+            if (IsGovernmentEmail)
+            {
+                WetControls.Extensions.ClientScript.InitFrmvldGovemail(this.Page, this.ErrorGovEmail);
+            }
+            // price script
+            if (IsPrice)
+            {
+                WetControls.Extensions.ClientScript.InitFrmvldPrice(this.Page, this.ErrorPrice);
+            }
 
             if (EnableClientValidation)
             {
@@ -598,23 +622,6 @@ namespace WetControls.Controls
                 if (IsGovernmentEmail)
                 {
                     base.Attributes.Add("data-rule-govemail", "true");
-
-                    if (!Page.ClientScript.IsStartupScriptRegistered("wb-frmvld-govemail"))
-                    {
-                        string patternGovEmail = @"$(document).on('wb-ready.wb', function (event) {{
-                                                    // make sure the validation is loaded
-                                                    if (jQuery.validator && jQuery.validator !== 'undefined') {{
-                                                        // allows you to create functions for a specific validation method
-                                                        (function () {{
-                                                            // the actual validation method govemail is the key to call the function
-                                                            jQuery.validator.addMethod('govemail', function (value, element, params) {{
-                                                                return this.optional( element ) || /^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{{|}}~-]+@((?:[a-zA-Z]([a-zA-Z0-9-.]{{0,61}}[a-zA-Z0-9]).gc{{1}})|canada|scc-csc)(.ca){{1}}$/.test( value );
-                                                            }}, jQuery.validator.format('{0}')); // this is the default string
-                                                        }}());
-                                                    }}
-                                                }});";
-                        Page.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-govemail", string.Format(patternGovEmail, ErrorGovEmail), true);
-                    }
                 }
                 if (IsUrl)
                 {
@@ -624,8 +631,6 @@ namespace WetControls.Controls
                 {
                     base.Attributes.Add("type", "date");
                     base.Attributes.Add("data-rule-dateISO", "true");
-
-                    WetControls.Extensions.ClientScript.InitDatePicker(this.Page);
                 }
                 if (IsTime)
                 {
@@ -644,23 +649,6 @@ namespace WetControls.Controls
                 if (IsPrice)
                 {
                     base.Attributes.Add("data-rule-price", "true");
-
-                    if (!Page.ClientScript.IsStartupScriptRegistered("wb-frmvld-price"))
-                    {
-                        string patternPrice = @"$(document).on('wb-ready.wb', function (event) {{
-                                                // make sure the validation is loaded
-                                                if (jQuery.validator && jQuery.validator !== 'undefined') {{
-                                                    // allows you to create functions for a specific validation method
-                                                    (function () {{
-                                                        // the actual validation method price is the key to call the function
-                                                        jQuery.validator.addMethod('price', function (value, element, params) {{
-                                                            return this.optional( element ) || /^[0-9]+([\,|\.]{{0,1}}[0-9]{{2}}){{0,1}}$/.test( value );
-                                                        }}, jQuery.validator.format('{0}')); // this is the default string
-                                                    }}());
-                                                }}
-                                            }});";
-                        Page.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-price", string.Format(patternPrice, ErrorPrice), true);
-                    }
                 }
                 if (IsLettersOnly)
                 {
@@ -695,7 +683,6 @@ namespace WetControls.Controls
                 }
                 if (StepNumber != 0)
                 {
-                    //base.Attributes.Add("step", StepNumber.ToString(new System.Globalization.CultureInfo("fr-CA")));
                     base.Attributes.Add("step", StepNumber.ToString());
                 }
                 if (MinLength > 0 && MaxLength > 0)
@@ -737,7 +724,14 @@ namespace WetControls.Controls
                 base.Attributes.Add("placeholder", Placeholder);
             }
 
+            base.OnLoad(e);
+        }
+
+        protected override void OnPreRender(EventArgs e)
+        {
             this.AddCssClass("form-control");
+
+            base.OnPreRender(e);
         }
 
         protected override void Render(HtmlTextWriter writer)

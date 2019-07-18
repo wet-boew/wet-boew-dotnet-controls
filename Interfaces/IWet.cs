@@ -4,6 +4,7 @@
     {
         string ID { get; set; }
         bool Visible { get; set; }
+        string CssClass { get; set; }
         string LabelText { get; set; }
         string LabelCssClass { get; set; }
         string ValidationErrorMsg { get; set; }

@@ -54,8 +54,33 @@ namespace WetControls.Extensions
             if (!p.ClientScript.IsStartupScriptRegistered("wb-frmvld-date"))
             {
                 // postack event initialisation
-                string initDate = @"Sys.WebForms.PageRequestManager.getInstance().add_endRequest(initDatePicker);";
+                string initDate = @"$(initDatePicker);
+                                    Sys.WebForms.PageRequestManager.getInstance().add_endRequest(initDatePicker);";
                 p.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-date", initDate, true);
+            }
+        }
+
+        public static void InitFrmvldGovemail(Page p, string errorMsg)
+        {
+            if (!p.ClientScript.IsStartupScriptRegistered("wb-frmvld-govemail"))
+            {
+                string patternGovEmail = @"$(document).on('wb-ready.wb', function (event) {{
+                                                // make sure the validation is loaded
+                                                frmvldGovemail('{0}');
+                                            }});";
+                p.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-govemail", string.Format(patternGovEmail, errorMsg), true);
+            }
+        }
+
+        public static void InitFrmvldPrice(Page p, string errorMsg)
+        {
+            if (!p.ClientScript.IsStartupScriptRegistered("wb-frmvld-price"))
+            {
+                string patternPrice = @"$(document).on('wb-ready.wb', function (event) {{
+                                                // make sure the validation is loaded
+                                                frmvldPrice('{0}');
+                                            }});";
+                p.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-price", string.Format(patternPrice, errorMsg), true);
             }
         }
     }

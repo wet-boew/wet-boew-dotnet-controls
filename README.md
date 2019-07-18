@@ -92,16 +92,44 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 	}
 ```
 
-## Documentation
+## Exemple of use IWet Interface
+
+>All WetControls with validation extends IWet Interface
+
+```C#
+	// get all controls with validation in whole page
+	foreach (WetControls.Interfaces.IWet ctrl in Page.GetAllIWetControls())
+    {
+		// apply my custom css class
+        ctrl.CssClass = "myCustomClass";
+    }
+```
+
+# Documentation
+
+## Interface IWet
+| Option    | Type |
+| --- | --- |
+| ID | string |
+| Visible | Boolean |
+| CssClass | string |
+| LabelText | string |
+| LabelCssClass | string |
+| ValidationErrorMsg | string |
+| IsRequired | Boolean |
+| IsValid | Boolean |
+| EnableClientValidation | Boolean |
+
+## Controls
 
 <a name="wetsummary"></a>
-### WetSummary Options
+### WetSummary Extends Panel
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | DisplaySummary | Boolean | True | Show or hide the summary |
 
 <a name="wettextbox"></a>
-### WetTextBox Options
+### WetTextBox Extends TextBox, IWet
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | LabelText | String | Empty | Text for the label associated to this control |
@@ -136,7 +164,7 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 | IsValid | Boolean | True | Server side validation with the sames rules of client validation |
 
 <a name="wetcheckbox"></a>
-### WetCheckbox Options
+### WetCheckbox Extends CheckBox, IWet
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | LabelText | String | Empty | Text for the label associated to this control |
@@ -148,7 +176,7 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 | EnableClientValidation | Boolean | true | Enable the client validation for this input |
 
 <a name="wetcheckboxlist"></a>
-### WetCheckBoxList Options
+### WetCheckBoxList Extends CheckBoxList, IWet
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | LabelText | String | Empty | Text for the label associated to this control |
@@ -160,7 +188,7 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 | EnableClientValidation | Boolean | true | Enable the client validation for this input |
 
 <a name="wetradiobutton"></a>
-### WetRadioButton Options
+### WetRadioButton Extends RadioButton, IWet
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | LabelText | String | Empty | Text for the label associated to this control |
@@ -172,7 +200,7 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 | EnableClientValidation | Boolean | true | Enable the client validation for this input |
 
 <a name="wetradiobuttonlist"></a>
-### WetRadioButtonList Options
+### WetRadioButtonList Extends RadioButtonList, IWet
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | LabelText | String | Empty | Text for the label associated to this control |
@@ -183,7 +211,7 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 | EnableClientValidation | Boolean | true | Enable the client validation for this input |
 
 <a name="wetdropdownlist"></a>
-### WetDropDownList Options
+### WetDropDownList Extends DropDownList, IWet
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | LabelText | String | Empty | Text for the label associated to this control |
@@ -195,7 +223,7 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 | EnableClientValidation | Boolean | true | Enable the client validation for this input |
 
 <a name="wethyperlink"></a>
-### WetHyperLink Options
+### WetHyperLink Extends HyperLink
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | ButtonType | ENUM_TYPE | ENUM_TYPE.Default | Class applied for the type of the input |
@@ -204,7 +232,7 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 | IsActive | Boolean | False | Class applied "active" |
 
 <a name="wetprogressbar"></a>
-### WetProgressBar Options
+### WetProgressBar Extends CompositeControl
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | ProgressList | List<ProgressData> | Empty | Class applied for the type of the input |
@@ -219,7 +247,7 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 | ProgressData.ProgressWidth | Decimal | 0 | ValueNow / ValueMax * 100 |
 
 <a name="wetfileupload"></a>
-### WetFileUpload Options
+### WetFileUpload Extends FileUpload, INamingConatiner, IWet
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | LabelText | String | Empty | Text for the label associated to this control |
@@ -230,7 +258,7 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 | EnableClientValidation | Boolean | true | Enable the client validation for this input |
 
 <a name="wetmodal"></a>
-### WetModal Options
+### WetModal Extends WebControl, INamingContainer
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | Content | ITemplate | Null | Modal contents |
@@ -238,14 +266,14 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 | ShowPopup | Void | Null | Display the modal |
 
 <a name="wetcallout"></a>
-### WetCallout Options
+### WetCallout Extends Panel
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | Title | String | Empty | Title text |
 | Type | ENUM_CALLOUT_TYPE | ENUM_CALLOUT_TYPE.Default | Style applied to the control |
 
 <a name="wetalert"></a>
-### WetAlert Options
+### WetAlert Extends Panel
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | Title | String | Empty | Title text |
@@ -254,7 +282,7 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 | Dismissible | Boolean | False | Add close button for dismissible control |
 
 <a name="wetbutton"></a>
-### WetButton Options
+### WetButton Extends Button
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | ButtonType | BUTTON_TYPE | BUTTON_TYPE.Default | Type of the button |
@@ -265,14 +293,14 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 | MessageConfirmation | String | Empty | Client confirmation before submit |
 
 <a name="wetimage"></a>
-### WetImage Options
+### WetImage Extends Image
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | Shape | ENUM_SHAPE | ENUM_SHAPE.Default | Style applied to the image |
 | IsResponsive | Boolean | False | Class applied "img-responsive" |
 
 <a name="wetimagebutton"></a>
-### WetImageButton Options
+### WetImageButton Extends ImageButton
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | ButtonType | BUTTON_TYPE | BUTTON_TYPE.Default | Type of the button |
@@ -283,7 +311,7 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 | MessageConfirmation | String | Empty | Client confirmation before submit |
 
 <a name="wetlinkbutton"></a>
-### WetLinkButton Options
+### WetLinkButton Extends LinkButton
 | Option    | Type | Default | Description |
 | --- | --- | --- | --- |
 | ButtonType | BUTTON_TYPE | BUTTON_TYPE.Default | Type of the button |

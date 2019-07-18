@@ -4,6 +4,10 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 
 >These controls work with async postback in Web Forms Project.
 
+::: warning
+Planning Version for ASP.NET MVC
+:::
+
 ## Web Forms Components
 
 1.  [WetSummary](#wetsummary)
@@ -99,15 +103,15 @@ Custom web controls based on .net controls adapted for Web Experience Toolkit (W
 ```C#
 	// get all controls with validation in whole page
 	foreach (WetControls.Interfaces.IWet ctrl in Page.GetAllIWetControls())
-    {
-		// apply my custom css class
-        ctrl.CssClass = "myCustomClass";
-    }
+		{
+			// apply my custom css class
+			ctrl.CssClass = "myCustomClass";
+		}
 ```
 
 # Documentation
 
-## Interface IWet
+## IWet Interface
 | Option    | Type |
 | --- | --- |
 | ID | string |

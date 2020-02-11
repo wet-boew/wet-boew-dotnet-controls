@@ -189,5 +189,12 @@ namespace WetControls.Controls
 
             writer.RenderEndTag();
         }
+
+        public void Clear()
+        {
+            this.Attributes.Clear();
+            // reset validation
+            ViewState["IsValid"] = null;
+        }
     }
 }

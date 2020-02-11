@@ -70,6 +70,17 @@ public static class PageExt
         return IsAllIWetCtrlsValid;
     }
 
+    /// <summary>
+    /// Clear all IWet child controls from its parent
+    /// </summary>
+    public static void ClearAllInnerWetControls(this Control ctrls)
+    {
+        foreach (var ctrl in ctrls.GetAllIWetControls())
+        {
+            ctrl.Clear();
+        }
+    }
+
     public static IEnumerable<WetControls.Interfaces.IWet> GetAllIWetControls(this Control parent)
     {
         var result = new List<WetControls.Interfaces.IWet>();

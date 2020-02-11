@@ -96,17 +96,23 @@ Planning Version for ASP.NET MVC
 	}
 ```
 
-## Exemple of use IWet Interface
+### Exemple of use IWet Interface
 
 >All WetControls with validation extends IWet Interface
 
 ```C#
 	// get all controls with validation in whole page
 	foreach (WetControls.Interfaces.IWet ctrl in Page.GetAllIWetControls())
-		{
-			// apply my custom css class
-			ctrl.CssClass = "myCustomClass";
-		}
+	{
+		// apply my custom css class
+		ctrl.CssClass = "myCustomClass";
+	}
+
+	// clear the values of a unique control
+	txtFirstName.Clear();
+
+	// clear all child WetControl with the IWet Interface from its parent
+	container.ClearAllInnerWetControls();
 ```
 
 # Documentation
@@ -123,6 +129,7 @@ Planning Version for ASP.NET MVC
 | IsRequired | Boolean |
 | IsValid | Boolean |
 | EnableClientValidation | Boolean |
+| Clear | Void |
 
 ## Controls
 

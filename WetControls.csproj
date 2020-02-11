@@ -87,6 +87,8 @@
     <Content Include="bin\Release\WetControls.dll" />
     <Content Include="bin\Release\WetControls.pdb" />
     <Content Include="preview-wetcontrols.gif" />
+    <Content Include="Scripts\ready.js" />
+    <Content Include="Scripts\wetscripts.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

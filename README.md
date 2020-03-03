@@ -160,6 +160,8 @@ Planning Version for ASP.NET MVC
 | IsNumber | Boolean | False | Number only validation |
 | MinNumber | Integer | 0 | Minimum number validation |
 | MaxNumber | Integer | 0 | Maximum number validation |
+| MinDate | String | Empty | Minimum date validation |
+| MaxDate | String | Empty | Maximum date validation |
 | StepNumber | Decimal | 0 | Step number validation |
 | IsAlphanumeric | Boolean | False | Alphanumeric validation |
 | IsDigitsOnly | Boolean | False | Digits only validation |

@@ -272,6 +272,34 @@ namespace WetControls.Controls
         [
         Bindable(true),
         Category("Appearance"),
+        DefaultValue(""),
+        ]
+        public string MinDate
+        {
+            get
+            {
+                string t = (string)ViewState["MinDate"];
+                return t ?? String.Empty;
+            }
+            set { ViewState["MinDate"] = value; }
+        }
+        [
+        Bindable(true),
+        Category("Appearance"),
+        DefaultValue(""),
+        ]
+        public string MaxDate
+        {
+            get
+            {
+                string t = (string)ViewState["MaxDate"];
+                return t ?? String.Empty;
+            }
+            set { ViewState["MaxDate"] = value; }
+        }
+        [
+        Bindable(true),
+        Category("Appearance"),
         DefaultValue(0),
         ]
         public decimal StepNumber
@@ -447,52 +475,57 @@ namespace WetControls.Controls
                     // all the regex are the same of client validation from Web Experience Toolkit (WET)
                     if (!Visible) return true;
                     if (IsRequired && string.IsNullOrEmpty(Text)) return false;
+                    if (!IsRequired && string.IsNullOrEmpty(Text)) return true;
                     if (IsPhoneNumber)
                     {
                         string regExp = @"^[+]?[0-9]{0,1}[-. ]?\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$";
-                        if (string.IsNullOrEmpty(Text)) return false;
                         if (!System.Text.RegularExpressions.Regex.IsMatch(Text, regExp)) return false;
                     }
                     if (IsPostalCode)
                     {
                         string regExp = @"^[ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVWXYZ]( )?\d[ABCEGHJKLMNPRSTVWXYZ]\d$";
-                        if (string.IsNullOrEmpty(Text)) return false;
                         if (!System.Text.RegularExpressions.Regex.IsMatch(Text, regExp)) return false;
                     }
                     if (IsEmail)
                     {
                         string regExp = @"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
-                        if (string.IsNullOrEmpty(Text)) return false;
                         if (!System.Text.RegularExpressions.Regex.IsMatch(Text, regExp)) return false;
                     }
                     if (IsGovernmentEmail)
                     {
                         string regExp = @"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@((?:[a-zA-Z]([a-zA-Z0-9-.]{0,61}[a-zA-Z0-9]).gc{1})|canada|scc-csc)(.ca){1}$";
-                        if (string.IsNullOrEmpty(Text)) return false;
                         if (!System.Text.RegularExpressions.Regex.IsMatch(Text, regExp)) return false;
                     }
                     if (IsUrl)
                     {
                         string regExp = @"^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)(?::\d{2,5})?(?:[/?#]\S*)?$";
-                        if (string.IsNullOrEmpty(Text)) return false;
                         if (!System.Text.RegularExpressions.Regex.IsMatch(Text, regExp)) return false;
                     }
                     if (IsDate)
                     {
                         string regExp = @"^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$";
-                        if (string.IsNullOrEmpty(Text)) return false;
                         if (!System.Text.RegularExpressions.Regex.IsMatch(Text, regExp)) return false;
+                        if (!string.IsNullOrEmpty(MinDate))
+                        {
+                            DateTime.TryParse(Text, out DateTime date);
+                            DateTime.TryParse(MinDate, out DateTime minDate);
+                            if (date < minDate) return false;
+                        }
+                        if (!string.IsNullOrEmpty(MaxDate))
+                        {
+                            DateTime.TryParse(Text, out DateTime date);
+                            DateTime.TryParse(MinDate, out DateTime maxDate);
+                            if (date > maxDate) return false;
+                        }
                     }
                     if (IsTime)
                     {
                         string regExp = @"^(?:0?[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$";
-                        if (string.IsNullOrEmpty(Text)) return false;
                         if (!System.Text.RegularExpressions.Regex.IsMatch(Text, regExp)) return false;
                     }
                     if (IsNumber)
                     {
                         string regExp = @"^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$";
-                        if (string.IsNullOrEmpty(Text)) return false;
                         if (!System.Text.RegularExpressions.Regex.IsMatch(Text, regExp)) return false;
                     }
                     if (MinNumber != 0 || MaxNumber != 0)
@@ -509,31 +542,26 @@ namespace WetControls.Controls
                     if (IsAlphanumeric)
                     {
                         string regExp = @"^[a-zA-Z0-9_]*$";
-                        if (string.IsNullOrEmpty(Text)) return false;
                         if (!System.Text.RegularExpressions.Regex.IsMatch(Text, regExp)) return false;
                     }
                     if (IsDigitsOnly)
                     {
                         string regExp = @"^\d+$";
-                        if (string.IsNullOrEmpty(Text)) return false;
                         if (!System.Text.RegularExpressions.Regex.IsMatch(Text, regExp)) return false;
                     }
                     if (IsPrice)
                     {
                         string regExp = @"^[0-9]+([\,|\.]{0,1}[0-9]{2}){0,1}$";
-                        if (string.IsNullOrEmpty(Text)) return false;
                         if (!System.Text.RegularExpressions.Regex.IsMatch(Text, regExp)) return false;
                     }
                     if (IsLettersWithBasicPunc)
                     {
                         string regExp = @"^[A-Za-z-.,()'""]*$";
-                        if (string.IsNullOrEmpty(Text)) return false;
                         if (!System.Text.RegularExpressions.Regex.IsMatch(Text, regExp)) return false;
                     }
                     if (IsLettersOnly)
                     {
                         string regExp = @"^[a-zA-Z]*$";
-                        if (string.IsNullOrEmpty(Text)) return false;
                         if (!System.Text.RegularExpressions.Regex.IsMatch(Text, regExp)) return false;
                     }
                     if (IsNoWhiteSpace)
@@ -542,19 +570,15 @@ namespace WetControls.Controls
                     }
                     if (MinLength > 0)
                     {
-                        if (string.IsNullOrEmpty(Text)) return false;
-                        int i = Text.Length;
-                        if (i < MinLength) return false;
+                        if (Text.Length < MinLength) return false;
                     }
                     if (MaxLength > 0)
                     {
-                        if (string.IsNullOrEmpty(Text)) return false;
-                        int i = Text.Length;
-                        if (i > MaxLength) return false;
+                        if (Text.Length > MaxLength) return false;
                     }
                     if (MinWords != 0 || MaxWords != 0)
                     {
-                        if (string.IsNullOrEmpty(Text) || MinWords < 0 || MaxWords < 0) return false;
+                        if (MinWords < 0 || MaxWords < 0) return false;
 
                         char[] delimiters = new char[] { ' ', '\r', '\n' };
                         int i = Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries).Length;
@@ -577,6 +601,32 @@ namespace WetControls.Controls
                 }
             }
             set { ViewState["IsValid"] = value; }
+        }
+
+        private void VerifyValidationConflicts()
+        {
+            if (IsDate && !string.IsNullOrEmpty(MinDate) && MinNumber != 0)
+                throw new ArgumentException("You van not add validation for minNumber with minDate.");
+
+            if (IsDate && !string.IsNullOrEmpty(MaxDate) && MaxNumber != 0)
+                throw new ArgumentException("You van not add validation for maxNumber with maxDate.");
+
+            if (IsDate && !string.IsNullOrEmpty(MinDate) && !string.IsNullOrEmpty(MaxDate))
+            {
+                DateTime.TryParse(MinDate, out DateTime minDate);
+                DateTime.TryParse(MaxDate, out DateTime maxDate);
+                if (minDate >= maxDate)
+                    throw new Exception("Date conflict between MinDate(" + MinDate + ")  and MaxDate(" + MaxDate + ")");
+            }
+
+            if (MinNumber != 0 && MaxNumber != 0 && MinNumber >= MaxNumber)
+                throw new Exception("Number conflict between MinNumber(" + MinNumber + ")  and MaxNumber(" + MaxNumber + ")");
+
+            if (MinLength != 0 && MaxLength != 0 && MinLength >= MaxLength)
+                throw new Exception("Length conflict between MinLength(" + MinLength + ")  and MaxLength(" + MaxLength + ")");
+
+            if (MinWords != 0 && MaxWords != 0 && MinWords >= MaxWords)
+                throw new Exception("Words conflict between MinWords(" + MinWords + ")  and MaxWords(" + MaxWords + ")");
         }
 
         protected override void OnLoad(EventArgs e)
@@ -602,6 +652,9 @@ namespace WetControls.Controls
 
             if (EnableClientValidation)
             {
+                // attributes validation conflicts
+                VerifyValidationConflicts();
+
                 if (IsRequired)
                 {
                     base.Attributes.Add("required", "required");

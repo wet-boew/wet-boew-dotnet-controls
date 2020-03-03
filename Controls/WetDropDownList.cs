@@ -130,6 +130,21 @@ namespace WetControls.Controls
             set { ViewState["EnableClientValidation"] = value; }
         }
 
+        [
+        Bindable(true),
+        Category("Appearance"),
+        DefaultValue(true),
+        ]
+        public bool AutoSelectUniqueItem
+        {
+            get
+            {
+                object o = ViewState["AutoSelectUniqueItem"];
+                return (o == null) ? true : (bool)o;
+            }
+            set { ViewState["AutoSelectUniqueItem"] = value; }
+        }
+
         public bool IsValid
         {
             get 
@@ -150,6 +165,12 @@ namespace WetControls.Controls
         protected override void OnDataBinding(EventArgs e)
         {
             base.OnDataBinding(e);
+
+            // select first item if unique
+            if (AutoSelectUniqueItem && this.Items.Count == 1)
+            {
+                this.Items[0].Selected = true;
+            }
 
             if (EnableSelectText)
             {

@@ -232,6 +232,7 @@ Planning Version for ASP.NET MVC
 | IsRequired | Boolean | False | Mandatory form field |
 | IsValid | Boolean | True | Server side validation with the sames rules of client validation |
 | EnableClientValidation | Boolean | true | Enable the client validation for this input |
+| AutoSelectUniqueItem | Boolean | true | Auto select first item if unique |
 
 <a name="wethyperlink"></a>
 ### WetHyperLink Extends HyperLink

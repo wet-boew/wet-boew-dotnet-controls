@@ -514,7 +514,7 @@ namespace WetControls.Controls
                         if (!string.IsNullOrEmpty(MaxDate))
                         {
                             DateTime.TryParse(Text, out DateTime date);
-                            DateTime.TryParse(MinDate, out DateTime maxDate);
+                            DateTime.TryParse(MaxDate, out DateTime maxDate);
                             if (date > maxDate) return false;
                         }
                     }

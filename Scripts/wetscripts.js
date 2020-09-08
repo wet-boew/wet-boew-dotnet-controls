@@ -26,6 +26,13 @@ function postbackValidation() {
     checkErrors();
 }
 
+// fixRadioCheckbox event
+function fixRadioCheckbox() {
+    $('div.checkbox, div.checkbox-inline, div.radio, div.radio-inline').children('label').css("font-weight", "inherit").prepend(function () {
+        return $(this).siblings('input');
+    });
+}
+
 // checkboxlist event
 function fixCheckBoxList() {
     $(':checkbox[data-rule-require_from_group]').closest('fieldset').find('div').on('change', function () {

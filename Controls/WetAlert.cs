@@ -72,7 +72,7 @@ namespace WetControls.Controls
 
         protected override void OnPreRender(EventArgs e)
         {
-            this.CssClass = "";
+            this.AddCssClass("alert");
 
             // alert type
             if (AlertType == ALERT_TYPE.Success)
@@ -91,8 +91,6 @@ namespace WetControls.Controls
             {
                 this.AddCssClass("alert-info");
             }
-
-            this.AddCssClass("alert");
 
             // text
             if (!string.IsNullOrEmpty(Content))

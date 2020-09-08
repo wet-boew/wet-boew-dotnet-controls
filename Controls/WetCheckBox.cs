@@ -205,11 +205,9 @@ namespace WetControls.Controls
             writer.AddAttribute(HtmlTextWriterAttribute.Class, IsInline ? "checkbox-inline" : "checkbox", false);
 
             writer.RenderBeginTag(HtmlTextWriterTag.Div);
-            writer.RenderBeginTag(HtmlTextWriterTag.Label);
 
             base.Render(writer);
 
-            writer.RenderEndTag();
             writer.RenderEndTag();
             writer.RenderEndTag();
         }

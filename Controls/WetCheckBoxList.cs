@@ -176,6 +176,7 @@ namespace WetControls.Controls
                 writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClass);
             }
             writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
+            writer.AddAttribute(HtmlTextWriterAttribute.Style, "border-top:0");
             writer.RenderBeginTag(HtmlTextWriterTag.Fieldset);
 
             if (IsRequired)
@@ -196,7 +197,7 @@ namespace WetControls.Controls
             {
                 writer.Write(LabelText);
             }
-            writer.RenderEndTag();
+            writer.RenderEndTag(); // close span
 
             if (IsRequired)
             {
@@ -205,22 +206,40 @@ namespace WetControls.Controls
                 writer.Write(RequiredText);
                 writer.RenderEndTag();
             }
-            writer.RenderEndTag();
-
+            writer.RenderEndTag(); // close legend
+            if (RepeatDirection == RepeatDirection.Horizontal)
+            {
+                writer.RenderBeginTag(HtmlTextWriterTag.Table);
+            }
             for (int i = 0; i < this.Items.Count; i++)
             {
                 this.RenderItem(ListItemType.Item, i, new RepeatInfo(), writer);
             }
-
-            writer.RenderEndTag();
+            if (RepeatDirection == RepeatDirection.Horizontal)
+            {
+                writer.RenderEndTag(); // close table
+            }
+            writer.RenderEndTag(); // close fieldset
         }
 
         protected override void RenderItem(ListItemType itemType, int repeatIndex, RepeatInfo repeatInfo, HtmlTextWriter writer)
         {
+            if (RepeatDirection == RepeatDirection.Horizontal)
+            {
+                if (repeatIndex == 0)
+                {
+                    writer.RenderBeginTag(HtmlTextWriterTag.Tr);
+                }
+                else if (RepeatColumns > 0 && repeatIndex % RepeatColumns == 0)
+                {
+                    writer.RenderEndTag(); // close tr
+                    writer.RenderBeginTag(HtmlTextWriterTag.Tr);
+                }
+                writer.RenderBeginTag(HtmlTextWriterTag.Td);
+                writer.AddAttribute(HtmlTextWriterAttribute.Style, "margin-right:20px;"); // fix render for table
+            }
             writer.AddAttribute(HtmlTextWriterAttribute.Class, RepeatDirection == System.Web.UI.WebControls.RepeatDirection.Horizontal ? "checkbox-inline" : "checkbox");
             writer.RenderBeginTag(HtmlTextWriterTag.Div);
-
-            writer.RenderBeginTag(HtmlTextWriterTag.Label);
 
             // required
             if (IsRequired && EnableClientValidation)
@@ -231,10 +250,19 @@ namespace WetControls.Controls
                     writer.AddAttribute("data-rule-require_from_group", string.Format("[{0}, \".{1}\"]", this.MinNumberFieldsRequired, this.ClientID));
                 }
             }
+
             base.RenderItem(itemType, repeatIndex, repeatInfo, writer);
 
-            writer.RenderEndTag();
-            writer.RenderEndTag();
+            writer.RenderEndTag(); // close div
+
+            if (RepeatDirection == RepeatDirection.Horizontal)
+            {
+                writer.RenderEndTag(); // close td
+                if (repeatIndex == this.Items.Count - 1)
+                {
+                    writer.RenderEndTag(); // close tr
+                }
+            }
         }
 
         public void Clear()

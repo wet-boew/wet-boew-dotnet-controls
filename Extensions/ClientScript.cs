@@ -24,6 +24,18 @@ namespace WetControls.Extensions
             }
         }
 
+        public static void FixRadioCheckbox(Page p)
+        {
+            // bug correction with radiobutton and checkbox because we need to wrap input inside label
+            if (!p.ClientScript.IsStartupScriptRegistered("wb-frmvld-fixRadioCheckbox"))
+            {
+                string script = @"fixRadioCheckbox();
+                                Sys.WebForms.PageRequestManager.getInstance().add_endRequest(fixRadioCheckbox);";
+
+                p.ClientScript.RegisterStartupScript(typeof(string), "wb-frmvld-fixRadioCheckbox", script, true);
+            }
+        }
+
         public static void FixCheckBoxList(Page p)
         {
             // bug correction with checkboxlist because we can not put the same name for required validation in web form
